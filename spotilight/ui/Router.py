@@ -1,20 +1,14 @@
+from spotilight.model.Model import Model
 import sys
 import urlparse
 import urllib
 import json
 import xbmcgui
 from xmlrpclib import Fault
-import xbmc
 import re
 
 class Router:
 
-    def parseArgs(self):
-        args = urlparse.parse_qs(sys.argv[2][1:])
-        for key in args.keys():
-            if len(args[key]) == 1:
-                args[key] = args[key][0]
-        self.args = args
 
     def __init__(self, route_config, context = None):
         self.parseArgs()        
@@ -43,7 +37,7 @@ class Router:
             raise Exception("Incorrect router config. No function provided for path = " + self.path)
         
         if self.context != None:
-            self.execute_path_function(function, args)            
+            self.execute_path_function(function, Model.from_object(args))            
         else:
             function(args)
         
@@ -51,11 +45,19 @@ class Router:
     def url_for(path, args = {}):
         query = {}
         query['path'] = path
+        if not type(args) is dict:
+            args = args.__dict__
         query['args'] = json.dumps(args)
         base_url = sys.argv[0]
         for k, v in query.iteritems():
             query[k] = unicode(v).encode('utf-8')
         return base_url + '?' + urllib.urlencode(query)
         
+    def parseArgs(self):
+        args = urlparse.parse_qs(sys.argv[2][1:])
+        for key in args.keys():
+            if len(args[key]) == 1:
+                args[key] = args[key][0]
+        self.args = args
              
         

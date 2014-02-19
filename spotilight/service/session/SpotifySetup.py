@@ -6,7 +6,6 @@ from spotify.session import Session
 from spotify import MainLoop, Bitrate
 import os
 import xbmc
-from spotilight.service.session.Authenticator import Authenticator
 
 class SpotifySetup:
     

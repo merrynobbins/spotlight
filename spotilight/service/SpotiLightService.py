@@ -6,14 +6,12 @@ from spotilight.service.command.BrowseArtist import BrowseArtist
 from spotilight.service.command.LoadTrack import LoadTrack
 from spotilight.service.command.LoadAlbum import LoadAlbum
 from spotilight.service.util.AlbumFilter import AlbumFilter
-from spotilight.model.Model import Model
 
 class SpotiLightService:
     
-    def __init__(self, session, player, authenticator, converter):
+    def __init__(self, session, authenticator, model_factory):
         self.session = session
-        self.player = player
-        self.converter = converter
+        self.model_factory = model_factory
         self.authenticator = authenticator
 
     @SessionGuard
@@ -21,32 +19,20 @@ class SpotiLightService:
         search_result = Search(query, self.session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), self.session)
     
-        return self.from_spotify_tracks(tracks)
+        return self.model_factory.to_track_list_model(tracks)
     
     @SessionGuard
     def starred(self):
         search_result = LoadStarred(self.session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), self.session)
          
-        return self.from_spotify_tracks(tracks)
+        return self.model_factory.to_track_list_model(tracks)
 
     @SessionGuard
     def playlists(self):
         container = self.session.playlistcontainer()
 
-        return self.from_playlists(container.playlists())
-
-    @SessionGuard
-    def play(self, track_obj):
-        self.player.play(Model(**track_obj))
-
-        return {}
-    
-    @SessionGuard
-    def play_list(self, track_uris, starting_track_uri):
-        self.player.play_list(track_uris, starting_track_uri)
-        
-        return {}
+        return self.model_factory.to_playlist_list_model(container.playlists())
     
     @SessionGuard
     def playlist_tracks(self, name):
@@ -55,7 +41,7 @@ class SpotiLightService:
         if (len(matched_playlists) > 0):
             playlist = matched_playlists[0]
             tracks = LoadTrack.from_list(playlist.tracks(), self.session)
-            return self.from_spotify_tracks(tracks)
+            return self.model_factory.to_track_list_model(tracks)
         
         return []    
     
@@ -65,7 +51,7 @@ class SpotiLightService:
         browse = BrowseAlbum(album, self.session).run_and_wait()
         tracks = LoadTrack.from_list(browse.tracks(), self.session)
     
-        return self.from_spotify_tracks(tracks)
+        return self.model_factory.to_track_list_model(tracks)
     
     @SessionGuard
     def artist_albums(self, track_uri):
@@ -73,29 +59,6 @@ class SpotiLightService:
         browse = BrowseArtist(track.album().artist(), self.session).run_and_wait()
         albums = AlbumFilter(browse.albums()).filter()
     
-        return self.from_spotify_albums(albums)
-    
-    def from_playlists(self, playlists):
-
-        return [self.from_playlist(playlist, index) for index, playlist in enumerate(playlists)]
-   
-    def from_playlist(self, playlist, index):
-        
-        return Model(name = playlist.name(), index = index)
-    
-    def from_spotify_tracks(self, tracks):
-    
-        return map(lambda track:self.from_spotify(track), tracks)
-    
-    def from_spotify_albums(self, albums):
-    
-        return map(lambda album:self.from_spotify_album(album), albums)
-    
-    def from_spotify_album(self, album):
-        
-        return self.converter.to_album_message(album)
-    
-    def from_spotify(self, spotify_track):
-                    
-        return self.converter.to_track_message(spotify_track)
+        return self.model_factory.to_album_list_model(albums)
+       
     

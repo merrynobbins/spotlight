@@ -25,3 +25,22 @@ class ModelFactory:
                      thumbnailImage=self.url_gen.get_thumbnail_url(track),
                      path=self.url_gen.get_track_url(track),
                      time=track.duration() / 1000)
+
+    def to_playlist_list_model(self, playlists):
+
+        return [self.to_playlist_model(playlist, index) for index, playlist in enumerate(playlists)]
+   
+    def to_playlist_model(self, playlist, index):
+        
+        return Model(name = playlist.name(), index = index)
+    
+    def to_track_list_model(self, tracks):
+    
+        return map(lambda track:self.to_track_model(track), tracks)
+    
+    def to_album_list_model(self, albums):
+    
+        return map(lambda album:self.to_album_model(album), albums)
+    
+        
+    
