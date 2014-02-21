@@ -5,11 +5,7 @@ from spotilight.service.util.Settings import Settings
 from spotilight.model.ListItemFactory import ListItemFactory
   
 loader = LibLoader()
-loader.add_library_paths(['resources/libs/CherryPy.egg',
-                          'resources/libs/TaskUtils.egg',
-                          'resources/libs/PyspotifyCtypes.egg',
-                          'resources/libs/PyspotifyCtypesProxy.egg'])
-loader.set_library_paths('resources/dlls')
+loader.load_all()
   
 from spotilight.service.session.SpotifySetup import SpotifySetup
 from spotilight.service.SpotiLightService import SpotiLightService

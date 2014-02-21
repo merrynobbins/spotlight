@@ -1,27 +1,86 @@
+import os
+import platform
+import sys
+
 import xbmc
-import os, sys, platform
 import xbmcaddon
 
+
+class Platform:
+	
+	LINUX = 'System.Platform.Linux'
+	WINDOWS = 'System.Platform.Windows'
+	OSX = 'System.Platform.OSX'
+	
+	@staticmethod
+	def all_platforms():
+		return [getattr(Platform, attr) for attr in vars(Platform) 
+			if not callable(getattr(Platform, attr)) and not attr.startswith("__")]
+	
+class Architecture:
+	
+	X86 = "x86"
+	X86_64 = "x86_64"
+	ARMV6 = "armv6"	
+
+class Libraries:
+	
+	DLL_DIRS = {
+				(Platform.LINUX, Architecture.X86) : ["resources/dlls/linux/x86"],
+				(Platform.LINUX, Architecture.X86_64) : ["resources/dlls/linux/x86_64"],
+				(Platform.LINUX, Architecture.ARMV6) : ["resources/dlls/linux/armv6hf",
+													"resources/dlls/linux/armv6"],
+				(Platform.WINDOWS, Architecture.X86) : ["resources/dlls/windows/x86"],
+				(Platform.OSX, Architecture.X86) : ["resources/dlls/osx"]				
+				}
+	
+	EXTERNAL = ['resources/libs/CherryPy.egg',
+	              'resources/libs/TaskUtils.egg',
+	              'resources/libs/PyspotifyCtypes.egg',
+	              'resources/libs/PyspotifyCtypesProxy.egg']
+	
 class LibLoader:
 	
 	def __init__(self):
-		__addon_id__ = 'plugin.audio.spotifyxbmcplugin'
-		addon_cfg = xbmcaddon.Addon(__addon_id__)
+		addon_id = 'plugin.audio.spotifyxbmcplugin'
+		addon_cfg = xbmcaddon.Addon(addon_id)
 		self.addon_path = addon_cfg.getAddonInfo('path')
 	
+	def load_all(self):
+		self.add_native_libraries()
+		self.add_external_libraries()
+	
+	def add_native_libraries(self):
+		architecture = self.get_architecture()
+		platform = self.get_platform()
+		dirs_to_include = Libraries.DLL_DIRS.get((platform, architecture)) 
+
+		if len(dirs_to_include) == 0:
+			raise OSError('This platform is not supported (%s %s)' % (architecture, platform))
+
+		self.add_library_paths(dirs_to_include)
+	
+	def add_external_libraries(self):
+		self.add_library_paths(Libraries.EXTERNAL)
+	
 	def get_architecture(self):
-		try:
-			machine = platform.machine()
-			
-			#Some filtering...
-			if machine.startswith('armv6'):
-				return 'armv6'
-			
-			elif machine.startswith('i686'):
-				return 'x86'
+		architecture = platform.machine()
+
+		if architecture.startswith('armv6'):
+			return Architecture.ARMV6
 		
-		except:
-			return None
+		elif architecture.startswith('i686'):
+			return Architecture.X86
+		
+		return architecture
+	
+	def get_platform(self):
+		platforms = [platform for platform in Platform.all_platforms() if xbmc.getCondVisibility(platform)]
+		
+		if len(platforms) > 0:
+			return platforms.pop()
+		
+		return None
 	
 	def add_library_paths(self, paths):
 		for path in paths:
@@ -31,28 +90,6 @@ class LibLoader:
 		full_path = os.path.join(self.addon_path, path)
 		sys.path.append(full_path)
 	
-	def set_library_paths(self, base_dir):
-		arch_str = self.get_architecture()
+	
 		
-		if xbmc.getCondVisibility('System.Platform.Linux'):
-			if arch_str in(None, 'x86'):
-				self.add_library_path(os.path.join(base_dir, 'linux/x86'))
-			
-			if arch_str in(None, 'x86_64'):
-				self.add_library_path(os.path.join(base_dir, 'linux/x86_64'))
-			
-			if arch_str in(None, 'armv6'):
-				self.add_library_path(os.path.join(base_dir, 'linux/armv6hf'))
-				self.add_library_path(os.path.join(base_dir, 'linux/armv6'))
 		
-		elif xbmc.getCondVisibility('System.Platform.Windows'):
-			if arch_str in(None, 'x86'):
-				self.add_library_path(os.path.join(base_dir, 'windows/x86'))
-			else:
-				raise OSError('Sorry, only 32bit Windows is supported.')
-		
-		elif xbmc.getCondVisibility('System.Platform.OSX'):
-			self.add_library_path(os.path.join(base_dir, 'osx'))
-		
-		else:
-			raise OSError('Sorry, this platform is not supported.')
