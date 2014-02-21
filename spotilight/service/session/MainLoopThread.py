@@ -1,21 +1,15 @@
 import threading
 
 class MainLoopThread(threading.Thread):
-    __mainloop = None
-    __session = None
-    __proxy = None
-    
-    
-    def __init__(self, mainloop, session):
+       
+    def __init__(self, main_loop, session):
         threading.Thread.__init__(self)
-        self.__mainloop = mainloop
-        self.__session = session
-    
+        self.main_loop = main_loop
+        self.session = session
     
     def run(self):
-        self.__mainloop.loop(self.__session)
-    
+        self.main_loop.loop(self.session)
     
     def stop(self):
-        self.__mainloop.quit()
+        self.main_loop.quit()
         self.join(10)
