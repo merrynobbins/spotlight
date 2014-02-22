@@ -36,7 +36,6 @@ class Libraries:
 				}
 	
 	EXTERNAL = ['resources/libs/CherryPy.egg',
-	              'resources/libs/TaskUtils.egg',
 	              'resources/libs/PyspotifyCtypes.egg',
 	              'resources/libs/PyspotifyCtypesProxy.egg']
 	
