@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="Spotify account">
-        <setting label="Username" type="text"   id="username" default=""/>
-        <setting label="Password" type="text"   id="password" option="hidden"  enable="!eq(-1,)" default=""/>
-    </category>
+	<category label="Account">
+		<setting label="Username" type="text" id="username" default="" />
+		<setting label="Password" type="text" id="password" option="hidden" enable="!eq(-1,)" default="" />
+	</category>
+	<category label="Playback settings">
+		<setting label="Preferred bitrate" type="labelenum" id="preferred_bitrate" default="160kbps" values="96kbps|160kbps|320kbps" />
+		<setting label="Volume normalization" type="bool" id="value_normalization" default="false" />
+		<setting label="Maximum cache size (MB)" type="number" id="max_cache_size" default="100" />
+	</category>
+	<category label="Advanced">
+		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />
+	</category>
 </settings>

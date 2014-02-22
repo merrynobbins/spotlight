@@ -18,8 +18,7 @@ class Authenticator:
         return self.connection_state()
         
     def connection_state(self):
-        state = self.session.connectionstate()
-        return state
+        return self.session.connectionstate()
         
     def logged_in(self):
         xbmc.log('Got logged in callback')

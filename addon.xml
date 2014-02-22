@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.audio.spotifyxbmcplugin" version="1.0beta1" name="Spotify plugin" provider-name="Dariusz Biskup">
+<addon id="plugin.audio.spotlight" version="1.0b1" name="Spotlight" provider-name="Dariusz Biskup">
     <requires>
         <import addon="xbmc.python" version="2.4"/>
-        <import addon="script.module.xbmcswift2" version="1.1.1" /> 
     </requires>
-    <extension point="xbmc.python.pluginsource" library="addon.py">
+    <extension point="xbmc.python.pluginsource" library="ui_addon.py">
         <provides>audio</provides>
     </extension>
     <extension point="xbmc.service"
-             library="server.py" start="[login|startup]">
+             library="server_addon.py" start="[login|startup]">
 	</extension>             
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
-        <summary>Spotify for XBMC.</summary>
-        <description></description>
+        <summary>Spotlight</summary>
+        <description>Spotify plugin for XBMC using native XBMC menus.</description>
         <disclaimer>It requires a Spotify premium account.</disclaimer>
     </extension>
 </addon>

@@ -5,14 +5,16 @@ import xbmcplugin
 import sys
 import xmlrpclib
 import socket
+from spotilight.service.util.Settings import Settings
 
 class Navigation:
     
-    SPOTILITE_SERVER = 'http://localhost:8000'
+    SPOTILITE_SERVER = 'http://localhost:%d'
 
     def __init__(self, ui_helper):
         self.addon_handle = int(sys.argv[1])        
         self.ui_helper = ui_helper
+        self.settings = Settings()
         self.create_server_proxy()  
         
         router_config = {None : self.main_menu, 
@@ -24,9 +26,7 @@ class Navigation:
                          Paths.ARTIST_ALBUMS : self.artist_albums}
         Router(router_config, self)
         
-    def create_server_proxy(self):
-        self.server = xmlrpclib.ServerProxy(Navigation.SPOTILITE_SERVER)
-        socket.setdefaulttimeout(30)
+
      
     def main_menu(self, args):
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
@@ -35,6 +35,13 @@ class Navigation:
       
         xbmcplugin.endOfDirectory(self.addon_handle)
      
+    def get_local_server_url(self):
+        return Navigation.SPOTILITE_SERVER % self.settings.internal_server_port 
+
+    def create_server_proxy(self):
+        self.server = xmlrpclib.ServerProxy(self.get_local_server_url())
+        socket.setdefaulttimeout(30)
+        
     def play_lists_menu(self, args):
         playlists = Model.from_object_list(self.server.playlists())
         self.ui_helper.create_list_of_playlists(playlists)

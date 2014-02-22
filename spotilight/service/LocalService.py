@@ -7,7 +7,7 @@ from spotilight.service.command.LoadTrack import LoadTrack
 from spotilight.service.command.LoadAlbum import LoadAlbum
 from spotilight.service.util.AlbumFilter import AlbumFilter
 
-class SpotiLightService:
+class LocalService:
     
     def __init__(self, session, authenticator, model_factory):
         self.session = session

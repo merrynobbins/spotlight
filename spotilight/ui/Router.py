@@ -24,8 +24,7 @@ class Router:
         except Fault, e:
             dialog = xbmcgui.Dialog()
             message = re.sub(r'<[^>]*>\:', '', e.faultString)
-            dialog.ok("SpotiLite Error", message)
-            raise e
+            dialog.ok("Spotlight Error", message)
 
     def execute(self):
         function = self.route_config.get(self.path)

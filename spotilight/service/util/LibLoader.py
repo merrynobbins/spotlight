@@ -42,7 +42,7 @@ class Libraries:
 class LibLoader:
 	
 	def __init__(self):
-		addon_id = 'plugin.audio.spotifyxbmcplugin'
+		addon_id = 'plugin.audio.spotlight'
 		addon_cfg = xbmcaddon.Addon(addon_id)
 		self.addon_path = addon_cfg.getAddonInfo('path')
 	
