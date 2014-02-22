@@ -4,4 +4,4 @@ loader.load_all()
 
 from spotlight.service.Server import Server    
 
-Server().run()        
+Server().start()        

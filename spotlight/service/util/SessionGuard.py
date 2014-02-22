@@ -1,4 +1,4 @@
-from spotlight.service.util.Settings import Settings
+from spotlight.model.Settings import Settings
 from spotify import ConnectionState
 import xbmc
 import types

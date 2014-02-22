@@ -1,3 +1,4 @@
+from spotlight.model.Settings import Settings
 import os
 import platform
 import sys
@@ -42,7 +43,7 @@ class Libraries:
 class LibLoader:
 	
 	def __init__(self):
-		addon_id = 'plugin.audio.spotlight'
+		addon_id = Settings.ADD_ON_ID
 		addon_cfg = xbmcaddon.Addon(addon_id)
 		self.addon_path = addon_cfg.getAddonInfo('path')
 	

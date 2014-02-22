@@ -1,7 +1,7 @@
 from spotlight.ui.Router import Router
 from spotlight.model.Model import Model
 from spotlight.ui.Paths import Paths
-from spotlight.service.util.Settings import Settings
+from spotlight.model.Settings import Settings
 import sys
 import xbmcplugin
 import xmlrpclib

@@ -2,6 +2,7 @@ from spotlight.service.session.appkey import appkey
 from spotify.session import Session
 import xbmc
 import os
+from spotlight.model.Settings import Settings
 
 class SessionFactory:
     
@@ -33,7 +34,7 @@ class SessionFactory:
             
     def addon_dir(self, local_dir):
         data_dir = xbmc.translatePath('special://profile/addon_data')
-        addon_data_dir = os.path.join(data_dir, 'plugin.audio.spotlight')
+        addon_data_dir = os.path.join(data_dir, Settings.ADD_ON_ID)
         
         return self.create_if_not_exist(os.path.join(addon_data_dir, local_dir))        
     

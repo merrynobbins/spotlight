@@ -1,4 +1,3 @@
-from spotlight.service.util.Settings import Settings
 from spotlight.service.session.SpotifyCallbacks import SpotifyCallbacks  
 from spotlight.service.session.SessionFactory import SessionFactory
 from spotlight.service.session.MainLoopThread import MainLoopThread
@@ -11,6 +10,8 @@ from spotifyproxy.audio import BufferManager
 from spotify import MainLoop
 from spotifyproxy.httpproxy import ProxyRunner
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+from spotlight.model.Settings import Settings
+from spotlight.service.ShutdownWatcher import ShutdownWatcher
 
 class Server:
 
@@ -20,33 +21,44 @@ class Server:
         self.authenticator = Authenticator()
         self.main_loop = MainLoop()
 
-    def run(self):
-        session = self.set_up_session()
-        self.set_up_authenticator(session)
-        self.start_main_loop(self.main_loop, session)        
-        proxy_info = self.start_proxy_runner(self.buffer_manager, session)
+    def start(self):        
+        self.session = self.set_up_session()
+        self.runner = self.start_main_loop()        
+        self.start_proxy_runner()
         self.log_in()
-        self.start_rpc_server(self.authenticator, session, proxy_info)
+        self.install_shutdown_watcher()
+        self.start_rpc_server()
+        
+    def stop(self):
+        self.session.logout()
+        self.server.shutdown()
+        self.runner.stop()
+        self.proxy_runner.stop()
 
-    def start_main_loop(self, main_loop, session):
-        runner = MainLoopThread(main_loop, session)
+    def start_main_loop(self):
+        runner = MainLoopThread(self.main_loop, self.session)
         runner.start()
+        return runner
 
-    def start_proxy_runner(self, buf, session):
-        proxy_runner = ProxyRunner(session, buf, host='127.0.0.1', allow_ranges=False)
-        proxy_runner.start()
-        proxy_info = ProxyInfo(proxy_runner)
-        return proxy_info
+    def start_proxy_runner(self):
+        self.proxy_runner = ProxyRunner(self.session, self.buffer_manager, host='127.0.0.1', allow_ranges=False)
+        self.proxy_runner.start()
+        self.proxy_info = ProxyInfo(self.proxy_runner)
+        return self.proxy_info
 
-    def start_rpc_server(self, authenticator, session, proxy_info):
-        model_factory = self.create_model_factory(session, proxy_info)
-        server = SimpleXMLRPCServer(("localhost", self.settings.internal_server_port))
-        server.register_instance(LocalService(session, authenticator, model_factory))
-        server.serve_forever()
+    def start_rpc_server(self):
+        model_factory = self.create_model_factory(self.session, self.proxy_info)
+        self.server = SimpleXMLRPCServer(("localhost", self.settings.internal_server_port))
+        self.server.register_instance(LocalService(self.session, self.authenticator, model_factory))        
+        self.server.serve_forever()      
+
+    def install_shutdown_watcher(self):
+        ShutdownWatcher(self).start()
 
     def set_up_session(self):
         callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
         session = SessionFactory(callbacks, self.settings).create_session()
+        self.set_up_authenticator(session)
         return session
 
     def set_up_authenticator(self, session):

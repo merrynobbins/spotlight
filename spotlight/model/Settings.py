@@ -2,6 +2,8 @@ import xbmcaddon
 
 class Settings:
     
+    ADD_ON_ID = 'plugin.audio.spotlight'
+    
     LABEL_TO_BITRATE = {
                         '96kbps' : 2,
                         '160kbps' :0,
@@ -9,7 +11,7 @@ class Settings:
                         }
     
     def __init__(self):
-        self.addon = xbmcaddon.Addon("plugin.audio.spotlight")
+        self.addon = xbmcaddon.Addon(Settings.ADD_ON_ID)
         
     @property        
     def username(self):
