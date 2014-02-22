@@ -1,10 +1,10 @@
-from spotilight.model.Model import Model
-from spotilight.ui.Router import Router
-import xbmc
+from spotlight.model.Model import Model
+from spotlight.ui.Router import Router
+from spotlight.ui.Paths import Paths
 import sys
 import xbmcplugin
+import xbmc
 import xbmcgui
-from spotilight.ui.Paths import Paths
 
 class UiHelper:
     

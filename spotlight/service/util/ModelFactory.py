@@ -1,5 +1,5 @@
+from spotlight.model.Model import Model
 from spotify import image, link
-from spotilight.model.Model import Model
 
 class ModelFactory:
     

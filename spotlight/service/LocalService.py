@@ -1,11 +1,11 @@
-from spotilight.service.util.SessionGuard import SessionGuard
-from spotilight.service.command.Search import Search
-from spotilight.service.command.LoadStarred import LoadStarred
-from spotilight.service.command.BrowseAlbum import BrowseAlbum
-from spotilight.service.command.BrowseArtist import BrowseArtist
-from spotilight.service.command.LoadTrack import LoadTrack
-from spotilight.service.command.LoadAlbum import LoadAlbum
-from spotilight.service.util.AlbumFilter import AlbumFilter
+from spotlight.service.util.SessionGuard import SessionGuard
+from spotlight.service.command.LoadTrack import LoadTrack
+from spotlight.service.command.LoadStarred import LoadStarred
+from spotlight.service.command.LoadAlbum import LoadAlbum
+from spotlight.service.command.BrowseAlbum import BrowseAlbum
+from spotlight.service.command.BrowseArtist import BrowseArtist
+from spotlight.service.util.AlbumFilter import AlbumFilter
+from spotlight.service.command.Search import Search
 
 class LocalService:
     

@@ -1,4 +1,4 @@
-from spotilight.service.util.SynchronizerMixin import SynchronizerMixin
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
 from spotify.playlist import PlaylistCallbacks
 
 class LoadStarred(SynchronizerMixin, PlaylistCallbacks):

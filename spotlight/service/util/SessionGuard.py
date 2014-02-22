@@ -1,10 +1,7 @@
-import types
-
+from spotlight.service.util.Settings import Settings
 from spotify import ConnectionState
-
-from spotilight.service.util.Settings import Settings
 import xbmc
-
+import types
 
 class SessionGuard(object):
     

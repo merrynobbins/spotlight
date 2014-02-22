@@ -1,4 +1,4 @@
-from spotilight.service.util.SynchronizerMixin import SynchronizerMixin
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
 from spotify.albumbrowse import AlbumbrowseCallbacks, Albumbrowse
 
 class BrowseAlbum(SynchronizerMixin, AlbumbrowseCallbacks):

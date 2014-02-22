@@ -1,5 +1,5 @@
-from spotilight.service.util.SynchronizerMixin import SynchronizerMixin
-from spotify.artistbrowse import Artistbrowse, ArtistbrowseCallbacks, BrowseType
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
+from spotify.artistbrowse import ArtistbrowseCallbacks, Artistbrowse, BrowseType
 
 class BrowseArtist(SynchronizerMixin, ArtistbrowseCallbacks):
     

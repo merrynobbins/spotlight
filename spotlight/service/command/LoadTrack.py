@@ -1,7 +1,6 @@
-from spotify import link
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
 from spotify.session import SessionCallbacks
-
-from spotilight.service.util.SynchronizerMixin import SynchronizerMixin
+from spotify import link
 
 
 class LoadTrack(SynchronizerMixin, SessionCallbacks):

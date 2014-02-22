@@ -1,11 +1,11 @@
-from spotilight.ui.Router import Router
-from spotilight.model.Model import Model
-from spotilight.ui.Paths import Paths
-import xbmcplugin
+from spotlight.ui.Router import Router
+from spotlight.model.Model import Model
+from spotlight.ui.Paths import Paths
+from spotlight.service.util.Settings import Settings
 import sys
+import xbmcplugin
 import xmlrpclib
 import socket
-from spotilight.service.util.Settings import Settings
 
 class Navigation:
     

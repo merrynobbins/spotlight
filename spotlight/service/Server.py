@@ -1,16 +1,16 @@
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from spotilight.service.util.Settings import Settings
-from spotilight.service.session.SpotifyCallbacks import SpotifyCallbacks  
-from spotilight.service.session.SessionFactory import SessionFactory
-from spotilight.service.session.MainLoopThread import MainLoopThread
-from spotify import MainLoop
-from spotilight.service.LocalService import LocalService
+from spotlight.service.util.Settings import Settings
+from spotlight.service.session.SpotifyCallbacks import SpotifyCallbacks  
+from spotlight.service.session.SessionFactory import SessionFactory
+from spotlight.service.session.MainLoopThread import MainLoopThread
+from spotlight.service.LocalService import LocalService
+from spotlight.service.session.Authenticator import Authenticator
+from spotlight.service.session.ProxyInfo import ProxyInfo
+from spotlight.service.util.UrlGenerator import UrlGenerator
+from spotlight.service.util.ModelFactory import ModelFactory
 from spotifyproxy.audio import BufferManager
-from spotilight.service.session.Authenticator import Authenticator
-from spotilight.service.session.ProxyInfo import ProxyInfo
-from spotilight.service.util.UrlGenerator import UrlGenerator
-from spotilight.service.util.ModelFactory import ModelFactory
+from spotify import MainLoop
 from spotifyproxy.httpproxy import ProxyRunner
+from SimpleXMLRPCServer import SimpleXMLRPCServer
 
 class Server:
 

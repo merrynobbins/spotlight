@@ -39,7 +39,7 @@ class SpotifyCallbacks(SessionCallbacks):
         self.authenticator.error()
         
     def metadata_updated(self, session):
-        xbmc.log("libspotify: META DATA updated!!!")
+        xbmc.log("libspotify: metadata updated")
         
     def notify_main_thread(self, session):
         xbmc.log("libspotify: notified main thread")

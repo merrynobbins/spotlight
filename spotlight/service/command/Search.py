@@ -1,6 +1,6 @@
-from spotilight.service.util.SynchronizerMixin import SynchronizerMixin
-from spotify import search
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
 from spotify.search import SearchCallbacks
+from spotify import search
 
 class Search(SynchronizerMixin, SearchCallbacks):
     

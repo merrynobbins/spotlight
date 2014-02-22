@@ -1,7 +1,7 @@
-from spotilight.service.session.appkey import appkey
+from spotlight.service.session.appkey import appkey
 from spotify.session import Session
-import os
 import xbmc
+import os
 
 class SessionFactory:
     

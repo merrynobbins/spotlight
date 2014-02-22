@@ -1,6 +1,6 @@
-from spotilight.ui.Navigation import Navigation
-from spotilight.ui.UiHelper import UiHelper
-from spotilight.model.ListItemFactory import ListItemFactory
+from spotlight.ui.Navigation import Navigation
+from spotlight.ui.UiHelper import UiHelper
+from spotlight.model.ListItemFactory import ListItemFactory
 
 Navigation(UiHelper(ListItemFactory()))
 

@@ -1,11 +1,11 @@
-from spotilight.model.Model import Model
-import sys
-import urlparse
-import urllib
-import json
-import xbmcgui
+from spotlight.model.Model import Model
 from xmlrpclib import Fault
+import xbmcgui
 import re
+import json
+import sys
+import urllib
+import urlparse
 
 class Router:
 
