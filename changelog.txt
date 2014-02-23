@@ -1,0 +1,7 @@
+1.0b1:
+- Added searching for tracks
+- Added listing playlists
+- Added listing artist albums
+- Added listing album tracks
+- Added displaying starred tracks
+- Added playing and queueing tracks, albums etc.
