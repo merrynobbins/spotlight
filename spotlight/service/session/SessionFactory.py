@@ -1,5 +1,5 @@
 # 
-#  Copyright © Dariusz Biskup
+#  Copyright (c) Dariusz Biskup
 #  
 #  This file is part of Spotlight
 # 
