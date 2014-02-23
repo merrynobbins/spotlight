@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.audio.spotlight" version="1.0b1" name="Spotlight" provider-name="Dariusz Biskup">
     <requires>
-        <import addon="xbmc.python" version="2.4"/>
+        <import addon="xbmc.python" version="2.1.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="ui_addon.py">
         <provides>audio</provides>
