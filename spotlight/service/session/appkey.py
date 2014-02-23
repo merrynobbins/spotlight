@@ -1,3 +1,22 @@
+# 
+#  Copyright © Dariusz Biskup
+#  
+#  This file is part of Spotlight
+# 
+#  Spotlight is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as 
+#  published by the Free Software Foundation; either version 3 of 
+#  the License, or (at your option) any later version.
+#  
+#  Spotlight is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>
+#  
+
 appkey = [
     0x01, 0x7B, 0x0D, 0xB5, 0x0A, 0x1C, 0xA8, 0x17, 0xE5, 0xC9, 0x2E, 0xB0, 0x4F, 0xF8, 0x18, 0x52,
     0x53, 0x2F, 0xBB, 0xFB, 0xAB, 0x8F, 0xFA, 0x8D, 0x8D, 0x0B, 0xC2, 0x8A, 0x5D, 0xF4, 0x4B, 0x7D,
