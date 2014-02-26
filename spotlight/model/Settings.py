@@ -17,20 +17,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #  
 
-import xbmcaddon
+from spotlight.model.GlobalSettings import GlobalSettings
+from spotify import Bitrate
 
-class Settings:
-    
-    ADD_ON_ID = 'plugin.audio.spotlight'
-    
+import xbmc
+
+class Settings(GlobalSettings):
+            
     LABEL_TO_BITRATE = {
-                        '96kbps' : 2,
-                        '160kbps' :0,
-                        '320bps' : 1,
+                        '96kbps' : Bitrate.Rate96k,
+                        '160kbps' :Bitrate.Rate160k,
+                        '320kbps' : Bitrate.Rate320k,
                         }
-    
-    def __init__(self):
-        self.addon = xbmcaddon.Addon(Settings.ADD_ON_ID)
         
     @property        
     def username(self):
@@ -51,14 +49,13 @@ class Settings:
     def preferred_bitrate(self):
         bitrate_label = self.addon.getSetting('preferred_bitrate')
         
+        xbmc.log('Bitrate label is %s' % bitrate_label)
+        
         return Settings.LABEL_TO_BITRATE.get(bitrate_label)
     
     @property
     def volume_normalization(self):
         
-        return self.addon.getSetting('value_normalization')
+        return self.addon.getSetting('volume_normalization')
     
-    @property
-    def internal_server_port(self):
-        
-        return int(self.addon.getSetting('internal_server_port'))
+   

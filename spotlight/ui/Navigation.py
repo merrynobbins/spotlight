@@ -20,7 +20,7 @@
 from spotlight.ui.Router import Router
 from spotlight.model.Model import Model
 from spotlight.ui.Paths import Paths
-from spotlight.model.Settings import Settings
+from spotlight.model.GlobalSettings import GlobalSettings
 import sys
 import xbmcplugin
 import xmlrpclib
@@ -33,7 +33,7 @@ class Navigation:
     def __init__(self, ui_helper):
         self.addon_handle = int(sys.argv[1])        
         self.ui_helper = ui_helper
-        self.settings = Settings()
+        self.settings = GlobalSettings()
         self.create_server_proxy()  
         
         router_config = {None : self.main_menu, 

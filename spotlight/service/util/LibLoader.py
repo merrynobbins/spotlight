@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #  
 
-from spotlight.model.Settings import Settings
+from spotlight.model.GlobalSettings import GlobalSettings
 import os
 import platform
 import sys
@@ -63,7 +63,7 @@ class Libraries:
 class LibLoader:
 	
 	def __init__(self):
-		addon_id = Settings.ADD_ON_ID
+		addon_id = GlobalSettings.ADD_ON_ID
 		addon_cfg = xbmcaddon.Addon(addon_id)
 		self.addon_path = addon_cfg.getAddonInfo('path')
 	
