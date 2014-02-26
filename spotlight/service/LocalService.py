@@ -26,6 +26,8 @@ from spotlight.service.command.BrowseArtist import BrowseArtist
 from spotlight.service.util.AlbumFilter import AlbumFilter
 from spotlight.service.command.Search import Search
 
+from spotlight.service.util import encode
+
 class LocalService:
     
     def __init__(self, session, authenticator, model_factory):
@@ -35,7 +37,7 @@ class LocalService:
 
     @SessionGuard
     def search(self, query):
-        search_result = Search(query, self.session).run_and_wait()
+        search_result = Search(encode(query), self.session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), self.session)
     
         return self.model_factory.to_track_list_model(tracks)
@@ -56,7 +58,7 @@ class LocalService:
     @SessionGuard
     def playlist_tracks(self, name):
         container = self.session.playlistcontainer()
-        matched_playlists = filter(lambda playlist : playlist.name() == name, container.playlists())
+        matched_playlists = filter(lambda playlist : playlist.name() == encode(name), container.playlists())
         if (len(matched_playlists) > 0):
             playlist = matched_playlists[0]
             tracks = LoadTrack.from_list(playlist.tracks(), self.session)
@@ -80,4 +82,5 @@ class LocalService:
     
         return self.model_factory.to_album_list_model(albums)
        
+    
     

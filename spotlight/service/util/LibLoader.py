@@ -51,7 +51,9 @@ class Libraries:
 				(Platform.LINUX, Architecture.ARMV6) : ["resources/dlls/linux/armv6hf",
 													"resources/dlls/linux/armv6"],
 				(Platform.WINDOWS, Architecture.X86) : ["resources/dlls/windows/x86"],
-				(Platform.OSX, Architecture.X86) : ["resources/dlls/osx"]				
+				(Platform.WINDOWS, Architecture.X86_64) : ["resources/dlls/windows/x86"],
+				(Platform.OSX, Architecture.X86) : ["resources/dlls/osx"],		
+				(Platform.OSX, Architecture.X86_64) : ["resources/dlls/osx"]		
 				}
 	
 	EXTERNAL = ['resources/libs/CherryPy.egg',
@@ -72,9 +74,12 @@ class LibLoader:
 	def add_native_libraries(self):
 		architecture = self.get_architecture()
 		platform = self.get_platform()
+		
+		xbmc.log('Your platform (%s %s)' % (architecture, platform))
+		
 		dirs_to_include = Libraries.DLL_DIRS.get((platform, architecture)) 
 
-		if len(dirs_to_include) == 0:
+		if dirs_to_include is None or len(dirs_to_include) == 0:
 			raise OSError('This platform is not supported (%s %s)' % (architecture, platform))
 
 		self.add_library_paths(dirs_to_include)
@@ -88,8 +93,11 @@ class LibLoader:
 		if architecture.startswith('armv6'):
 			return Architecture.ARMV6
 		
-		elif architecture.startswith('i686'):
+		elif architecture.startswith('i686') or architecture.startswith('i386'):
 			return Architecture.X86
+		
+		elif architecture.startswith('AMD64'):
+			return Architecture.X86_64
 		
 		return architecture
 	

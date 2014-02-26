@@ -42,7 +42,7 @@ class SessionGuard(object):
             try:
                 return self.func (*args, **kw)
             except Exception, e:
-                xbmc.log('Exception when calling service %s' % e)
+                xbmc.log('Exception when calling service %s args = %s kw = %s' % (e, args, kw))
         
         raise Exception("Cannot connect to Spotify. Are your credentials valid?")
     
