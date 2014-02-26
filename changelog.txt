@@ -1,3 +1,10 @@
+1.0.1b1:
+
+- Issue #4 Fixed machine check to make it work on Gotham and AMD64 and OSX64
+- Issue #3 Fixed search for using international characters
+- Issue #3 Fixed empty playlists when names contains special or international characters
+- Issue #2 Fixed bitrate settings crashing server
+
 1.0b1:
 - Added searching for tracks
 - Added listing playlists
