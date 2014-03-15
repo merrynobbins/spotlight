@@ -1,5 +1,7 @@
 1.1.0:
 
+- Spotify session is created lazily: if client add-on is accessed for the first time
+- Added StartSession, StopSession and HasActiveSession commands to control Spotify session from outside of Spotlight
 - Added Ant build script
 
 1.0.2:

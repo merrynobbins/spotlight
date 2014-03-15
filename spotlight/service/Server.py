@@ -36,25 +36,44 @@ class Server:
 
     def __init__(self):
         self.settings = Settings()
-        self.buffer_manager = BufferManager()
         self.authenticator = Authenticator()
-        self.main_loop = MainLoop()
+        self.url_gen = UrlGenerator()        
+        self.model_factory = ModelFactory(self.url_gen)
+        self.server_is_up = False
 
-    def start(self):        
-        self.session = self.set_up_session()
-        self.runner = self.start_main_loop()        
-        self.start_proxy_runner()
-        self.log_in()
-        self.install_shutdown_watcher()
-        self.start_rpc_server()
+    def start(self):      
+        if not self.server_is_up: 
+            self.main_loop = MainLoop()
+            self.buffer_manager = BufferManager() 
+            self.session = self.set_up_session()
+            self.runner = self.start_main_loop()        
+            self.start_proxy_runner()
+            self.set_up_model_factory(self.session, self.proxy_info)
+            self.log_in()
+            self.server_is_up = True
+            self.install_shutdown_watcher()
         
     def stop(self):
-        self.session.logout()
-        self.server.shutdown()
-        self.runner.stop()
-        self.proxy_runner.stop()
-
-    def start_main_loop(self):
+        if self.server_is_up:
+            self.session.logout()
+            self.runner.stop()
+            self.proxy_runner.stop()
+            self.clean_up()
+            self.server_is_up = False
+        
+    def is_active(self):
+        return self.server_is_up
+    
+    def clean_up(self):
+        self.session = None
+        self.model_factory.clean_up()
+        self.proxy_runner = None
+        self.proxy_info = None
+        self.authenticator.clean_up()
+        self.main_loop = None
+        self.buffer_manager = None
+    
+    def start_main_loop(self):        
         runner = MainLoopThread(self.main_loop, self.session)
         runner.start()
         return runner
@@ -66,9 +85,8 @@ class Server:
         return self.proxy_info
 
     def start_rpc_server(self):
-        model_factory = self.create_model_factory(self.session, self.proxy_info)
         self.server = SimpleXMLRPCServer(("localhost", self.settings.internal_server_port))
-        self.server.register_instance(LocalService(self.session, self.authenticator, model_factory))        
+        self.server.register_instance(LocalService(self))        
         self.server.serve_forever()      
 
     def install_shutdown_watcher(self):
@@ -77,18 +95,24 @@ class Server:
     def set_up_session(self):
         callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
         session = SessionFactory(callbacks, self.settings).create_session()
-        self.set_up_authenticator(session)
+        self.set_up_authenticator(session)        
         return session
 
     def set_up_authenticator(self, session):
-        return self.authenticator.set_session(session)
+        self.authenticator.set_session(session)
+    
+    def set_up_model_factory(self, session, proxy_info):
+        self.url_gen.set_session(session)
+        self.url_gen.set_proxy_info(proxy_info)        
 
     def log_in(self):
         return self.authenticator.login(self.settings.username, self.settings.password)
+    
+    def get_authenticator(self):
+        return self.authenticator
+    
+    def get_model_factory(self):
+        return self.model_factory
 
-    def create_model_factory(self, session, proxy_info):
-        url_gen = UrlGenerator(session, proxy_info)
-        model_factory = ModelFactory(url_gen)
-        return model_factory
     
         

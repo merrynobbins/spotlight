@@ -32,3 +32,5 @@ class MainLoopThread(threading.Thread):
     def stop(self):
         self.main_loop.quit()
         self.join(10)
+        self.main_loop = None
+        self.session = None

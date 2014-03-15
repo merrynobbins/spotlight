@@ -21,8 +21,10 @@ from spotify import image, link
 
 class UrlGenerator:
     
-    def __init__(self, session, proxy_info):
+    def set_session(self, session):
         self.session = session
+        
+    def set_proxy_info(self, proxy_info):
         self.host = proxy_info.host
         self.port = proxy_info.port
         self.proxy_info = proxy_info
@@ -61,3 +63,6 @@ class UrlGenerator:
 
         return link.create_from_album(album).as_string()
     
+    def clean_up(self):
+        self.session = None
+        self.proxy_info = None

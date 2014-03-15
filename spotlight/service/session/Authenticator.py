@@ -25,19 +25,28 @@ class Authenticator:
     
     WAIT_TIMEOUT = 10
     
+    def __init__(self):
+        self.flag = Event()
+        self.session = None
+    
     def set_session(self, session):
         self.session = session
-        self.flag = Event()
     
     def login(self, username, password):      
-        xbmc.log('Logging in')  
+        xbmc.log('Logging in')
+        self.check_session()  
         self.session.login(username, password)
         self.flag.wait(Authenticator.WAIT_TIMEOUT)
         xbmc.log('Lock released')        
         return self.connection_state()
         
     def connection_state(self):
+        self.check_session()
         return self.session.connectionstate()
+        
+    def current_session(self):
+        self.check_session()
+        return self.session
         
     def logged_in(self):
         xbmc.log('Got logged in callback')
@@ -54,3 +63,10 @@ class Authenticator:
     def release_lock(self):
         self.flag.set()
         self.flag.clear()
+        
+    def check_session(self):
+        if self.session is None:
+            raise Exception("Spotify session does not exist.")
+        
+    def clean_up(self):
+        self.session = None

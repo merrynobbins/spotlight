@@ -61,5 +61,6 @@ class ModelFactory:
     
         return map(lambda album:self.to_album_model(album), albums)
     
-        
+    def clean_up(self):
+        self.url_gen.clean_up()
     

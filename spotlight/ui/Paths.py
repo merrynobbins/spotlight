@@ -25,3 +25,6 @@ class Paths:
     GET_PLAYLIST = 'GetPlaylist' 
     ALBUM_TRACKS = 'AlbumTracks' 
     ARTIST_ALBUMS = 'ArtistAlbums'
+    START_SESSION = 'StartSession'
+    STOP_SESSION = 'StopSession'
+    HAS_ACTIVE_SESSION = 'HasAciveSession'

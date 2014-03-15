@@ -25,6 +25,7 @@ import sys
 import xbmcplugin
 import xmlrpclib
 import socket
+import xbmcgui
 
 class Navigation:
     
@@ -42,15 +43,31 @@ class Navigation:
                          Paths.PLAYLISTS : self.play_lists_menu,
                          Paths.GET_PLAYLIST : self.get_playlist,
                          Paths.ALBUM_TRACKS : self.album_tracks,
-                         Paths.ARTIST_ALBUMS : self.artist_albums}
+                         Paths.ARTIST_ALBUMS : self.artist_albums,
+                         Paths.START_SESSION: self.start_session,
+                         Paths.STOP_SESSION: self.stop_session,
+                         Paths.HAS_ACTIVE_SESSION: self.has_active_session,
+                         }
         Router(router_config, self)
-        
 
-     
+    def start_session(self):
+        self.server.start_session()
+        
+    def stop_session(self, args = {}):
+        result = self.server.stop_session()
+        dialog = xbmcgui.Dialog()
+        dialog.ok("Spotlight", result)
+        
+    def has_active_session(self):
+        return self.server.has_active_session()
+        
     def main_menu(self, args):
+        self.start_session()
+        
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
         self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
+        self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
       
         xbmcplugin.endOfDirectory(self.addon_handle)
      
