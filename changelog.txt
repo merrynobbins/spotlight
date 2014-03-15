@@ -1,3 +1,7 @@
+1.0.2:
+
+- Upgraded to PyspotifyCtypes 0.6 to fix problems on BoxeeBox
+
 1.0.1b1:
 
 - Issue #4 Fixed machine check to make it work on Gotham and AMD64 and OSX64

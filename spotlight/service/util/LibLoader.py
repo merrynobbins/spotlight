@@ -57,7 +57,7 @@ class Libraries:
 				}
 	
 	EXTERNAL = ['resources/libs/CherryPy.egg',
-	              'resources/libs/PyspotifyCtypes.egg',
+	              'resources/libs/PyspotifyCtypes-0.6-py2.4.egg',
 	              'resources/libs/PyspotifyCtypesProxy.egg']
 	
 class LibLoader:
