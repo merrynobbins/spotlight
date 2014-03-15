@@ -1,6 +1,10 @@
+1.1.0:
+
+- Added Ant build script
+
 1.0.2:
 
-- Upgraded to PyspotifyCtypes 0.6 to fix problems on BoxeeBox
+- Upgraded to PyspotifyCtypes 0.6 to fix problems on BoxeeBox 
 
 1.0.1b1:
 
@@ -14,5 +18,5 @@
 - Added listing playlists
 - Added listing artist albums
 - Added listing album tracks
-- Added displaying starred tracks
+- Added displaying starred tracks 
 - Added playing and queueing tracks, albums etc.
