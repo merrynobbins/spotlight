@@ -32,6 +32,7 @@ class UiHelper:
     UPDATE_CONTAINER_SCRIPT = 'XBMC.Container.Update(%s)' 
     CONTENT_SONGS = 'songs'
     CONTENT_ALBUMS = 'albums'
+    CONTENT_ARTISTS = 'artists'
 
     def __init__(self, list_item_factory):
         self.addon_handle = int(sys.argv[1])
@@ -56,23 +57,21 @@ class UiHelper:
          
     def create_list_of_playlists(self, playlists):
         for playlist in playlists:
-            xbmc.log('Adding to playlist with uri %s' % playlist.uri)
             url = Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))
             self.create_folder_item(playlist.name, url)
-            
-        xbmcplugin.endOfDirectory(self.addon_handle)
          
     def create_list_of_tracks(self, tracks):
         self.create_track_list_items(tracks)
-        
-        xbmcplugin.endOfDirectory(self.addon_handle)
         
     def create_list_of_albums(self, albums):
         for album in albums:
             url = Router.url_for(Paths.ALBUM_TRACKS, Model(album = album.uri))
             self.create_folder_item('%s [%s]' % (album.name, album.year), url, album.image)
-        
-        xbmcplugin.endOfDirectory(self.addon_handle)
+            
+    def create_list_of_artists(self, artists):
+        for artist in artists:
+            url = Router.url_for(Paths.ARTIST_ALBUMS, Model(artist = artist.uri))
+            self.create_folder_item('%s' % (artist.name), url)
 
     def create_track_list_items(self, tracks):
         for index, track in enumerate(tracks):
@@ -83,8 +82,11 @@ class UiHelper:
 
     def add_context_menu(self, track, play_url, li):
         browse_album_url = Router.url_for(Paths.ALBUM_TRACKS, Model(album = track.album_uri))
-        browse_artist_url = Router.url_for(Paths.ARTIST_ALBUMS, Model(track = track.uri))
+        browse_artist_url = Router.url_for(Paths.ARTIST_ALBUMS_FOR_TRACK, Model(track = track.uri))
         
         li.addContextMenuItems([('Queue item', UiHelper.RUN_PLUGIN_SCRIPT % play_url), 
                                 ('Browse album...', UiHelper.UPDATE_CONTAINER_SCRIPT % browse_album_url), 
                                 ('Browse artist...', UiHelper.UPDATE_CONTAINER_SCRIPT % browse_artist_url)])       
+
+    def end_directory(self):
+        xbmcplugin.endOfDirectory(self.addon_handle)

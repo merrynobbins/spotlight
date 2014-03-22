@@ -18,7 +18,9 @@
 #  
 
 from spotlight.model.Model import Model
-from spotify import image, link
+from spotify import image, link, playlist
+from spotify.playlist import Playlist
+from spotify.link import LinkType
 
 class ModelFactory:
     
@@ -58,6 +60,10 @@ class ModelFactory:
             
         return Model(name = playlist.name(), user = playlist.owner().canonical_name(), index = index, uri = uri)
     
+    def to_artist_model(self, artist):
+        
+        return Model(name = artist.name(), uri = link.create_from_artist(artist).as_string())
+    
     def to_track_list_model(self, tracks):
     
         return map(lambda track:self.to_track_model(track), tracks)
@@ -66,6 +72,27 @@ class ModelFactory:
     
         return map(lambda album:self.to_album_model(album), albums)
     
+    def to_artist_list_model(self, artists):
+    
+        return map(lambda artist:self.to_artist_model(artist), artists)
+    
+    def to_inbox_model(self, items, session):
+        track_links = [link.create_from_track(track) for track in items]
+        
+        albums = [track_link.as_album() 
+                  for track_link in track_links if track_link.type() is LinkType.Album]
+        artists = [track_link.as_artist() 
+                   for track_link in track_links if track_link.type() is LinkType.Artist]
+        tracks = [track_link.as_track() 
+                  for track_link in track_links if track_link.type() is LinkType.Track]
+        playlists = [Playlist(playlist.create(session, track_link)) 
+                     for track_link in track_links if track_link.type() is LinkType.Playlist]
+        
+        return Model(albums = self.to_album_list_model(albums),
+                     artists = self.to_artist_list_model(artists),
+                     tracks = self.to_track_list_model(tracks),
+                     playlists = self.to_playlist_list_model(playlists))
+    
     def clean_up(self):
         self.url_gen.clean_up()
-    
+        

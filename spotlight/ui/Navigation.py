@@ -39,12 +39,17 @@ class Navigation:
         
         router_config = {None : self.main_menu, 
                          Paths.INBOX: self.inbox,
+                         Paths.INBOX_ALBUMS: self.inbox_albums,
+                         Paths.INBOX_ARTISTS: self.inbox_artists,
+                         Paths.INBOX_PLAYLISTS: self.inbox_playlists,
+                         Paths.INBOX_TRACKS: self.inbox_tracks,
                          Paths.STARRED : self.starred, 
                          Paths.SEARCH : self.search, 
                          Paths.PLAYLISTS : self.play_lists_menu,
                          Paths.GET_PLAYLIST : self.get_playlist,
                          Paths.ALBUM_TRACKS : self.album_tracks,
                          Paths.ARTIST_ALBUMS : self.artist_albums,
+                         Paths.ARTIST_ALBUMS_FOR_TRACK : self.artist_albums_for_track,
                          Paths.START_SESSION: self.start_session,
                          Paths.STOP_SESSION: self.stop_session,
                          Paths.HAS_ACTIVE_SESSION: self.has_active_session,                         
@@ -71,7 +76,7 @@ class Navigation:
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
       
-        xbmcplugin.endOfDirectory(self.addon_handle)
+        self.ui_helper.end_directory()
      
     def get_local_server_url(self):
         return Navigation.SPOTILITE_SERVER % self.settings.internal_server_port 
@@ -83,32 +88,60 @@ class Navigation:
     def play_lists_menu(self, args):
         playlists = Model.from_object_list(self.server.playlists())
         self.ui_helper.create_list_of_playlists(playlists)
+        self.ui_helper.end_directory()
         
     def get_playlist(self, args):
         tracks = Model.from_object_list(self.server.playlist_tracks(args.uri))
         self.ui_helper.create_list_of_tracks(tracks)
+        self.ui_helper.end_directory()
             
     def inbox(self, args):
-        playlists = Model.from_object_list(self.server.inbox())
-        self.ui_helper.create_list_of_playlists(playlists)
+        inbox = Model.from_object(self.server.inbox())
+        
+        self.ui_helper.create_list_of_playlists(Model.from_object_list(inbox.playlists))
+        self.ui_helper.create_list_of_albums(Model.from_object_list(inbox.albums))
+        self.ui_helper.create_list_of_artists(Model.from_object_list(inbox.artists))
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(inbox.tracks))
+        self.ui_helper.end_directory()
+        
+    def inbox_albums(self, args):
+        pass
+    
+    def inbox_playlists(self, args):
+        pass
+    
+    def inbox_artists(self, args):
+        pass
+    
+    def inbox_tracks(self, args):
+        pass
             
     def starred(self, args):                
         tracks = Model.from_object_list(self.server.starred())
         self.ui_helper.create_list_of_tracks(tracks)
+        self.ui_helper.end_directory()
  
     def search(self, args):        
         query = self.ui_helper.keyboardText()
         if query is not None:
             tracks = Model.from_object_list(self.server.search(query))
             self.ui_helper.create_list_of_tracks(tracks)
+        self.ui_helper.end_directory()
         
     def album_tracks(self, args):
         tracks = Model.from_object_list(self.server.album_tracks(args.album))
         self.ui_helper.create_list_of_tracks(tracks)
+        self.ui_helper.end_directory()
+        
+    def artist_albums_for_track(self, args):
+        albums = Model.from_object_list(self.server.artist_albums_from_track(args.track))
+        self.ui_helper.create_list_of_albums(albums)
+        self.ui_helper.end_directory()
         
     def artist_albums(self, args):
-        albums = Model.from_object_list(self.server.artist_albums(args.track))
+        albums = Model.from_object_list(self.server.artist_albums(args.artist))
         self.ui_helper.create_list_of_albums(albums)
+        self.ui_helper.end_directory()
 
             
       

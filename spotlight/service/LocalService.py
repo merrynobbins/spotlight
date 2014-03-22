@@ -73,16 +73,8 @@ class LocalService:
     def inbox(self):
         session = self.current_session()
         result = LoadInbox(session).run_and_wait()
-        tracks = result.tracks()
-        playlists = []
         
-        for track in tracks:
-            track_link = link.create_from_track(track)
-            if track_link.type() is LinkType.Playlist:
-                current_playlist = Playlist(playlist.create(session, track_link))
-                playlists.append(current_playlist)
-        
-        return self.model_factory.to_playlist_list_model(playlists)
+        return self.model_factory.to_inbox_model(result.tracks(), session)
 
     @SessionGuard
     def playlists(self):
@@ -110,10 +102,19 @@ class LocalService:
         return self.model_factory.to_track_list_model(tracks)
     
     @SessionGuard
-    def artist_albums(self, track_uri):
+    def artist_albums_from_track(self, track_uri):
         session = self.current_session()
         track = LoadTrack.from_uri(track_uri, session)
         browse = BrowseArtist(track.album().artist(), session).run_and_wait()
+        albums = AlbumFilter(browse.albums()).filter()
+    
+        return self.model_factory.to_album_list_model(albums)
+    
+    @SessionGuard
+    def artist_albums(self, artist_uri):
+        session = self.current_session()
+        artist = link.create_from_string(artist_uri).as_artist()
+        browse = BrowseArtist(artist, session).run_and_wait()
         albums = AlbumFilter(browse.albums()).filter()
     
         return self.model_factory.to_album_list_model(albums)

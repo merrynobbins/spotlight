@@ -25,8 +25,14 @@ class Paths:
     GET_PLAYLIST = 'GetPlaylist' 
     ALBUM_TRACKS = 'AlbumTracks' 
     ARTIST_ALBUMS = 'ArtistAlbums'
+    ARTIST_ALBUMS_FOR_TRACK = 'ArtistAlbumsForTrack'
     START_SESSION = 'StartSession'
     STOP_SESSION = 'StopSession'
-    INBOX = 'Inbox'
     HAS_ACTIVE_SESSION = 'HasAciveSession'
+    INBOX = 'Inbox'
+    INBOX_PLAYLISTS = 'InboxPlaylists'
+    INBOX_ALBUMS = 'InboxAlbums'
+    INBOX_ARTISTS = 'InboxArtists'
+    INBOX_TRACKS = 'InboxTracks'
+    
     
