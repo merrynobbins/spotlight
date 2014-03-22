@@ -39,6 +39,7 @@ class ModelFactory:
                      album=track.album().name(),
                      artist=track.album().artist().name(),
                      uri=link.create_from_track(track).as_string(),
+                     type=link.create_from_track(track).type(),
                      album_uri=self.url_gen.get_album_uri(track.album()),
                      iconImage=self.url_gen.get_icon_url(track),
                      thumbnailImage=self.url_gen.get_thumbnail_url(track),
@@ -50,8 +51,12 @@ class ModelFactory:
         return [self.to_playlist_model(playlist, index) for index, playlist in enumerate(playlists)]
    
     def to_playlist_model(self, playlist, index):
-        
-        return Model(name = playlist.name(), index = index)
+        playlist_link = link.create_from_playlist(playlist)
+        uri = ''
+        if playlist_link is not None:
+            uri = playlist_link.as_string()
+            
+        return Model(name = playlist.name(), user = playlist.owner().canonical_name(), index = index, uri = uri)
     
     def to_track_list_model(self, tracks):
     

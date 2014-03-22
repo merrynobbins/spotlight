@@ -56,7 +56,8 @@ class UiHelper:
          
     def create_list_of_playlists(self, playlists):
         for playlist in playlists:
-            url = Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name))
+            xbmc.log('Adding to playlist with uri %s' % playlist.uri)
+            url = Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))
             self.create_folder_item(playlist.name, url)
             
         xbmcplugin.endOfDirectory(self.addon_handle)

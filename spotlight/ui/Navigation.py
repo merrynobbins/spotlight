@@ -29,7 +29,7 @@ import xbmcgui
 
 class Navigation:
     
-    SPOTILITE_SERVER = 'http://localhost:%d'
+    SPOTILITE_SERVER = 'http://127.0.0.1:%d'
 
     def __init__(self, ui_helper):
         self.addon_handle = int(sys.argv[1])        
@@ -38,6 +38,7 @@ class Navigation:
         self.create_server_proxy()  
         
         router_config = {None : self.main_menu, 
+                         Paths.INBOX: self.inbox,
                          Paths.STARRED : self.starred, 
                          Paths.SEARCH : self.search, 
                          Paths.PLAYLISTS : self.play_lists_menu,
@@ -46,7 +47,7 @@ class Navigation:
                          Paths.ARTIST_ALBUMS : self.artist_albums,
                          Paths.START_SESSION: self.start_session,
                          Paths.STOP_SESSION: self.stop_session,
-                         Paths.HAS_ACTIVE_SESSION: self.has_active_session,
+                         Paths.HAS_ACTIVE_SESSION: self.has_active_session,                         
                          }
         Router(router_config, self)
 
@@ -64,6 +65,7 @@ class Navigation:
     def main_menu(self, args):
         self.start_session()
         
+        self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
         self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
@@ -83,8 +85,12 @@ class Navigation:
         self.ui_helper.create_list_of_playlists(playlists)
         
     def get_playlist(self, args):
-        tracks = Model.from_object_list(self.server.playlist_tracks(args.name))
+        tracks = Model.from_object_list(self.server.playlist_tracks(args.uri))
         self.ui_helper.create_list_of_tracks(tracks)
+            
+    def inbox(self, args):
+        playlists = Model.from_object_list(self.server.inbox())
+        self.ui_helper.create_list_of_playlists(playlists)
             
     def starred(self, args):                
         tracks = Model.from_object_list(self.server.starred())

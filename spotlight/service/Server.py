@@ -85,7 +85,7 @@ class Server:
         return self.proxy_info
 
     def start_rpc_server(self):
-        self.server = SimpleXMLRPCServer(("localhost", self.settings.internal_server_port))
+        self.server = SimpleXMLRPCServer(("127.0.0.1", self.settings.internal_server_port))
         self.server.register_instance(LocalService(self))        
         self.server.serve_forever()      
 

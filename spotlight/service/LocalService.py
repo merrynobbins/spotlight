@@ -27,6 +27,11 @@ from spotlight.service.util.AlbumFilter import AlbumFilter
 from spotlight.service.command.Search import Search
 
 from spotlight.service.util import encode
+from spotlight.service.command.LoadInbox import LoadInbox
+import xbmc
+from spotify.link import LinkType
+from spotify import playlist, link
+from spotify.playlist import Playlist
 
 class LocalService:
     
@@ -63,6 +68,21 @@ class LocalService:
         tracks = LoadTrack.from_list(search_result.tracks(), session)
          
         return self.model_factory.to_track_list_model(tracks)
+    
+    @SessionGuard
+    def inbox(self):
+        session = self.current_session()
+        result = LoadInbox(session).run_and_wait()
+        tracks = result.tracks()
+        playlists = []
+        
+        for track in tracks:
+            track_link = link.create_from_track(track)
+            if track_link.type() is LinkType.Playlist:
+                current_playlist = Playlist(playlist.create(session, track_link))
+                playlists.append(current_playlist)
+        
+        return self.model_factory.to_playlist_list_model(playlists)
 
     @SessionGuard
     def playlists(self):
@@ -72,16 +92,13 @@ class LocalService:
         return self.model_factory.to_playlist_list_model(container.playlists())
     
     @SessionGuard
-    def playlist_tracks(self, name):
+    def playlist_tracks(self, uri):
+        playlist_link = link.create_from_string(uri)        
         session = self.current_session()
-        container = session.playlistcontainer()
-        matched_playlists = filter(lambda playlist : playlist.name() == encode(name), container.playlists())
-        if (len(matched_playlists) > 0):
-            playlist = matched_playlists[0]
-            tracks = LoadTrack.from_list(playlist.tracks(), session)
-            return self.model_factory.to_track_list_model(tracks)
+        linked_playlist = Playlist(playlist.create(session, playlist_link))
+        tracks = LoadTrack.from_list(linked_playlist.tracks(), session)
         
-        return []    
+        return self.model_factory.to_track_list_model(tracks)
     
     @SessionGuard
     def album_tracks(self, album_uri):

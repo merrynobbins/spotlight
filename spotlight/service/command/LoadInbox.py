@@ -17,16 +17,28 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #  
 
-class Paths:
+from spotlight.service.util.SynchronizerMixin import SynchronizerMixin
+from spotify.playlist import PlaylistCallbacks
 
-    STARRED = 'starred'
-    SEARCH = 'Search'
-    PLAYLISTS =  'Playlists' 
-    GET_PLAYLIST = 'GetPlaylist' 
-    ALBUM_TRACKS = 'AlbumTracks' 
-    ARTIST_ALBUMS = 'ArtistAlbums'
-    START_SESSION = 'StartSession'
-    STOP_SESSION = 'StopSession'
-    INBOX = 'Inbox'
-    HAS_ACTIVE_SESSION = 'HasAciveSession'
+class LoadInbox(SynchronizerMixin, PlaylistCallbacks):
     
+    def __init__(self, session):
+        self.session = session
+    
+    def before_wait(self):
+        self.playlist.add_callbacks(self)        
+    
+    def execute(self):
+        self.playlist = self.session.inbox_create()
+        
+        if self.playlist.is_loaded():
+            self.disable_wait()
+        
+        return self.playlist
+    
+    def playlist_state_changed(self, playlist):
+        if playlist.is_loaded(): 
+            self.done()
+            
+    def clean_up(self):
+        self.playlist.remove_callbacks(self)
