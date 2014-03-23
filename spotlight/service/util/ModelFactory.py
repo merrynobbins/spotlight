@@ -22,6 +22,7 @@ from spotify import image, link, playlist, handle_sp_error
 from spotify.playlist import Playlist, PlaylistType
 from spotify.link import LinkType
 import ctypes
+from spotify.track import TrackAvailability
 
 class ModelFactory:
     
@@ -112,9 +113,9 @@ class ModelFactory:
         
         return Model(name = artist.name(), uri = link.create_from_artist(artist).as_string())
     
-    def to_track_list_model(self, tracks):
+    def to_track_list_model(self, tracks, session):
     
-        return map(lambda track:self.to_track_model(track), tracks)
+        return [self.to_track_model(track) for track in tracks if track.get_availability(session) is not TrackAvailability.NotStreamable]
     
     def to_album_list_model(self, albums):
     
@@ -138,7 +139,7 @@ class ModelFactory:
         
         return Model(albums = self.to_album_list_model(albums),
                      artists = self.to_artist_list_model(artists),
-                     tracks = self.to_track_list_model(tracks),
+                     tracks = self.to_track_list_model(tracks, session),
                      playlists = self.to_playlist_list_model(playlists))
     
     def clean_up(self):

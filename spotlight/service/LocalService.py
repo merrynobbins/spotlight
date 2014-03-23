@@ -57,7 +57,7 @@ class LocalService:
         search_result = Search(encode(query), session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), session)
     
-        return self.model_factory.to_track_list_model(tracks)
+        return self.model_factory.to_track_list_model(tracks, session)
     
     @SessionGuard
     def starred(self):
@@ -65,7 +65,7 @@ class LocalService:
         search_result = LoadStarred(session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), session)
          
-        return self.model_factory.to_track_list_model(tracks)
+        return self.model_factory.to_track_list_model(tracks, session)
     
     @SessionGuard
     def inbox(self):
@@ -107,7 +107,7 @@ class LocalService:
         linked_playlist = Playlist(playlist.create(session, playlist_link))
         tracks = LoadTrack.from_list(linked_playlist.tracks(), session)
         
-        return self.model_factory.to_track_list_model(tracks)
+        return self.model_factory.to_track_list_model(tracks, session)
     
     @SessionGuard
     def album_tracks(self, album_uri):
@@ -116,7 +116,7 @@ class LocalService:
         browse = BrowseAlbum(album, session).run_and_wait()
         tracks = LoadTrack.from_list(browse.tracks(), session)
     
-        return self.model_factory.to_track_list_model(tracks)
+        return self.model_factory.to_track_list_model(tracks, session)
     
     @SessionGuard
     def artist_albums_from_track(self, track_uri):
