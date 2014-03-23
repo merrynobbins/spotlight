@@ -37,7 +37,7 @@ class UiHelper:
     def __init__(self, list_item_factory):
         self.addon_handle = int(sys.argv[1])
         self.list_item_factory = list_item_factory
-        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_SONGS)
+        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
     
     def keyboardText(self, heading = 'Enter phrase'):
         keyboard = xbmc.Keyboard('', heading)
@@ -49,32 +49,51 @@ class UiHelper:
     
     def create_folder_item(self, title, url, image = DEFAULT_FOLDER_IMG):
         item = xbmcgui.ListItem(title, iconImage = image)
-        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
-        
+                
         xbmcplugin.addDirectoryItem(handle = self.addon_handle, 
                                     url = url, listitem = item, 
                                     isFolder = True)       
          
     def create_list_of_playlists(self, playlists, show_owner = False):
-        for playlist in playlists:
-            url = Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))
-            self.create_folder_item(self.format_owner(playlist.name, playlist.owner, show_owner), url)
-         
-    def format_owner(self, name, owner, show):
-        if owner is None or show is False:
-            return name
+        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
         
-        return '%s [I]from %s[/I]' % (name, owner)
+        for playlist in playlists:
+            url = self.get_playlist_url(playlist)
+            self.create_folder_item(self.format_playlist_name(playlist, show_owner), url)
+        
+    def get_playlist_url(self, playlist):
+        if playlist.is_folder:
+            return Router.url_for(Paths.FOLDER_PLAYLISTS, Model(folder_id = playlist.folder_id))
+        else: 
+            return Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))         
+         
+    def format_playlist_name(self, playlist, show):
+        if playlist.owner is None or show is False:
+            return self.add_bold(playlist.name, when = playlist.is_folder)
+        
+        return self.add_bold('%s [I]from %s[/I]' % (playlist.name, playlist.owner), when = playlist.is_folder)
+
+    def add_bold(self, text, when):
+        if when:
+            return '[B]%s[/B]' % text
+        
+        return text
          
     def create_list_of_tracks(self, tracks):
+        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_SONGS)
+        
         self.create_track_list_items(tracks)
         
     def create_list_of_albums(self, albums):
+        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
+        
         for album in albums:
             url = Router.url_for(Paths.ALBUM_TRACKS, Model(album = album.uri))
             self.create_folder_item('%s [%s]' % (album.name, album.year), url, album.image)
             
     def create_list_of_artists(self, artists):
+        xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ARTISTS)
+        
         for artist in artists:
             url = Router.url_for(Paths.ARTIST_ALBUMS, Model(artist = artist.uri))
             self.create_folder_item('%s' % (artist.name), url)

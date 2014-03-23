@@ -22,7 +22,6 @@ from spotlight.model.Model import Model
 from spotlight.ui.Paths import Paths
 from spotlight.model.GlobalSettings import GlobalSettings
 import sys
-import xbmcplugin
 import xmlrpclib
 import socket
 import xbmcgui
@@ -45,8 +44,9 @@ class Navigation:
                          Paths.INBOX_TRACKS: self.inbox_tracks,
                          Paths.STARRED : self.starred, 
                          Paths.SEARCH : self.search, 
-                         Paths.PLAYLISTS : self.play_lists_menu,
+                         Paths.PLAYLISTS : self.play_lists_menu,                         
                          Paths.GET_PLAYLIST : self.get_playlist,
+                         Paths.FOLDER_PLAYLISTS : self.folder_playlists,
                          Paths.ALBUM_TRACKS : self.album_tracks,
                          Paths.ARTIST_ALBUMS : self.artist_albums,
                          Paths.ARTIST_ALBUMS_FOR_TRACK : self.artist_albums_for_track,
@@ -74,7 +74,7 @@ class Navigation:
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
         self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
-        self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
+#         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
       
         self.ui_helper.end_directory()
      
@@ -95,17 +95,22 @@ class Navigation:
         self.ui_helper.create_list_of_tracks(tracks)
         self.ui_helper.end_directory()
             
+    def folder_playlists(self, args):
+        playlists = Model.from_object_list(self.server.folder_playlists(args.folder_id))
+        self.ui_helper.create_list_of_playlists(playlists)
+        self.ui_helper.end_directory()
+            
     def inbox(self, args):
         inbox = Model.from_object(self.server.inbox())
-        self.create_inbox_menu('Playlists', Paths.INBOX_PLAYLISTS, when = len(inbox.playlists) > 0)
-        self.create_inbox_menu('Artists', Paths.INBOX_ARTISTS, when = len(inbox.artists) > 0)
-        self.create_inbox_menu('Albums', Paths.INBOX_ALBUMS, when = len(inbox.albums) > 0)
-        self.create_inbox_menu('Tracks', Paths.INBOX_TRACKS, when = len(inbox.tracks) > 0)
+        self.create_inbox_menu('Playlists (%d)', Paths.INBOX_PLAYLISTS, count = len(inbox.playlists))
+        self.create_inbox_menu('Artists (%d)', Paths.INBOX_ARTISTS, count = len(inbox.artists))
+        self.create_inbox_menu('Albums (%d)', Paths.INBOX_ALBUMS, count = len(inbox.albums))
+        self.create_inbox_menu('Tracks (%d)', Paths.INBOX_TRACKS, count = len(inbox.tracks))
         self.ui_helper.end_directory()
         
-    def create_inbox_menu(self, name, path, when):
-        if when:
-            self.ui_helper.create_folder_item(name, Router.url_for(path))
+    def create_inbox_menu(self, name_tpl, path, count):
+        if count > 0:
+            self.ui_helper.create_folder_item(name_tpl % count, Router.url_for(path))
         
     def inbox_albums(self, args):
         inbox = Model.from_object(self.server.inbox())

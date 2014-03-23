@@ -28,10 +28,8 @@ from spotlight.service.command.Search import Search
 
 from spotlight.service.util import encode
 from spotlight.service.command.LoadInbox import LoadInbox
-import xbmc
-from spotify.link import LinkType
 from spotify import playlist, link
-from spotify.playlist import Playlist
+from spotify.playlist import Playlist, PlaylistType
 
 class LocalService:
     
@@ -81,7 +79,26 @@ class LocalService:
         session = self.current_session()
         container = session.playlistcontainer()
 
-        return self.model_factory.to_playlist_list_model(container.playlists())
+        return self.model_factory.to_playlist_list_model_from_container(container)
+
+    @SessionGuard
+    def folder_playlists(self, folder_id):
+        session = self.current_session()
+        container = session.playlistcontainer()
+        add_playlists = False
+        playlists = []
+        for index in range(0, container.num_playlists() - 1):
+            playlist = container.playlist(index)
+            playlist_type = container.playlist_type(index)
+            if playlist_type is PlaylistType.StartFolder and str(container.playlist_folder_id(index)) == str(folder_id):
+                add_playlists = True
+            elif playlist_type is PlaylistType.EndFolder:
+                add_playlists = False
+            elif add_playlists:
+                playlists.append(playlist)
+                
+        return self.model_factory.to_playlist_list_model(playlists)
+
     
     @SessionGuard
     def playlist_tracks(self, uri):

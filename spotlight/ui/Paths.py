@@ -23,6 +23,7 @@ class Paths:
     SEARCH = 'Search'
     PLAYLISTS =  'Playlists' 
     GET_PLAYLIST = 'GetPlaylist' 
+    FOLDER_PLAYLISTS = 'FolderPlaylists'
     ALBUM_TRACKS = 'AlbumTracks' 
     ARTIST_ALBUMS = 'ArtistAlbums'
     ARTIST_ALBUMS_FOR_TRACK = 'ArtistAlbumsForTrack'

@@ -18,10 +18,10 @@
 #  
 
 from spotlight.model.Model import Model
-from spotify import image, link, playlist
-from spotify.playlist import Playlist
+from spotify import image, link, playlist, handle_sp_error
+from spotify.playlist import Playlist, PlaylistType
 from spotify.link import LinkType
-import xbmc
+import ctypes
 
 class ModelFactory:
     
@@ -49,17 +49,64 @@ class ModelFactory:
                      path=self.url_gen.get_track_url(track),
                      time=track.duration() / 1000)
 
+    # Fix for a bug in pyspotify-ctypes
+    def playlist_folder_name(self, container, index):
+        buf = ctypes.create_string_buffer(255)
+        handle_sp_error(
+            container._PlaylistContainer__container_interface.playlist_folder_name(
+                container._PlaylistContainer__container_struct, index, buf, 255
+            )
+        )
+        return buf.value
+        
     def to_playlist_list_model(self, playlists):
-
+        
         return [self.to_playlist_model(playlist, index) for index, playlist in enumerate(playlists)]
+        
+    def to_playlist_list_model_from_container(self, container):
+        without_nested = []        
+        ignore = False
+        for index in range(0, container.num_playlists() - 1):
+            playlist = container.playlist(index)
+            playlist_type = container.playlist_type(index)
+            if playlist_type is PlaylistType.StartFolder:
+                ignore = True
+                without_nested.append(self.to_playlist_model(
+                                                             playlist, 
+                                                             index, 
+                                                             self.playlist_folder_name(container, index),
+                                                             container.playlist_folder_id(index))) 
+            if playlist_type is PlaylistType.EndFolder:
+                ignore = False
+            elif not ignore:
+                without_nested.append(self.to_playlist_model(playlist, index))
+            
+        return without_nested
    
-    def to_playlist_model(self, playlist, index):
+    def to_playlist_model(self, playlist, index, folder_name = None, folder_id = 0):
+
+        return Model(name = self.playlist_name(playlist, folder_name), 
+                     owner = playlist.owner().display_name(), 
+                     index = index, 
+                     uri = self.playlist_uri(playlist), 
+                     is_folder = folder_name is not None, 
+                     folder_id = str(folder_id))
+    
+    def playlist_name(self, playlist, folder_name):
+        name = ''
+        if folder_name is not None:
+            name = folder_name
+        else:
+            name = playlist.name()
+        return name
+    
+    def playlist_uri(self, playlist):
         playlist_link = link.create_from_playlist(playlist)
         uri = ''
         if playlist_link is not None:
             uri = playlist_link.as_string()
             
-        return Model(name = playlist.name(), owner = playlist.owner().display_name(), index = index, uri = uri)
+        return uri
     
     def to_artist_model(self, artist):
         
