@@ -21,6 +21,7 @@ from spotlight.model.Model import Model
 from spotify import image, link, playlist
 from spotify.playlist import Playlist
 from spotify.link import LinkType
+import xbmc
 
 class ModelFactory:
     
@@ -58,7 +59,7 @@ class ModelFactory:
         if playlist_link is not None:
             uri = playlist_link.as_string()
             
-        return Model(name = playlist.name(), user = playlist.owner().canonical_name(), index = index, uri = uri)
+        return Model(name = playlist.name(), owner = playlist.owner().display_name(), index = index, uri = uri)
     
     def to_artist_model(self, artist):
         
@@ -78,7 +79,7 @@ class ModelFactory:
     
     def to_inbox_model(self, items, session):
         track_links = [link.create_from_track(track) for track in items]
-        
+                           
         albums = [track_link.as_album() 
                   for track_link in track_links if track_link.type() is LinkType.Album]
         artists = [track_link.as_artist() 

@@ -97,24 +97,35 @@ class Navigation:
             
     def inbox(self, args):
         inbox = Model.from_object(self.server.inbox())
-        
-        self.ui_helper.create_list_of_playlists(Model.from_object_list(inbox.playlists))
-        self.ui_helper.create_list_of_albums(Model.from_object_list(inbox.albums))
-        self.ui_helper.create_list_of_artists(Model.from_object_list(inbox.artists))
-        self.ui_helper.create_list_of_tracks(Model.from_object_list(inbox.tracks))
+        self.create_inbox_menu('Playlists', Paths.INBOX_PLAYLISTS, when = len(inbox.playlists) > 0)
+        self.create_inbox_menu('Artists', Paths.INBOX_ARTISTS, when = len(inbox.artists) > 0)
+        self.create_inbox_menu('Albums', Paths.INBOX_ALBUMS, when = len(inbox.albums) > 0)
+        self.create_inbox_menu('Tracks', Paths.INBOX_TRACKS, when = len(inbox.tracks) > 0)
         self.ui_helper.end_directory()
         
+    def create_inbox_menu(self, name, path, when):
+        if when:
+            self.ui_helper.create_folder_item(name, Router.url_for(path))
+        
     def inbox_albums(self, args):
-        pass
+        inbox = Model.from_object(self.server.inbox())
+        self.ui_helper.create_list_of_albums(Model.from_object_list(inbox.albums))
+        self.ui_helper.end_directory()
     
     def inbox_playlists(self, args):
-        pass
+        inbox = Model.from_object(self.server.inbox())
+        self.ui_helper.create_list_of_playlists(Model.from_object_list(inbox.playlists), show_owner = True)
+        self.ui_helper.end_directory()
     
     def inbox_artists(self, args):
-        pass
+        inbox = Model.from_object(self.server.inbox())
+        self.ui_helper.create_list_of_artists(Model.from_object_list(inbox.artists))
+        self.ui_helper.end_directory()
     
     def inbox_tracks(self, args):
-        pass
+        inbox = Model.from_object(self.server.inbox())
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(inbox.tracks))
+        self.ui_helper.end_directory()
             
     def starred(self, args):                
         tracks = Model.from_object_list(self.server.starred())

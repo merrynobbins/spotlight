@@ -55,10 +55,16 @@ class UiHelper:
                                     url = url, listitem = item, 
                                     isFolder = True)       
          
-    def create_list_of_playlists(self, playlists):
+    def create_list_of_playlists(self, playlists, show_owner = False):
         for playlist in playlists:
             url = Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))
-            self.create_folder_item(playlist.name, url)
+            self.create_folder_item(self.format_owner(playlist.name, playlist.owner, show_owner), url)
+         
+    def format_owner(self, name, owner, show):
+        if owner is None or show is False:
+            return name
+        
+        return '%s [I]from %s[/I]' % (name, owner)
          
     def create_list_of_tracks(self, tracks):
         self.create_track_list_items(tracks)
