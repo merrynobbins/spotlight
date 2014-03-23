@@ -24,7 +24,6 @@ from spotlight.model.GlobalSettings import GlobalSettings
 import sys
 import xmlrpclib
 import socket
-import xbmcgui
 
 class Navigation:
     
@@ -56,15 +55,15 @@ class Navigation:
                          }
         Router(router_config, self)
 
-    def start_session(self):
+    def start_session(self, args = {}):
         self.server.start_session()
         
     def stop_session(self, args = {}):
-        result = self.server.stop_session()
-        dialog = xbmcgui.Dialog()
-        dialog.ok("Spotlight", result)
         
-    def has_active_session(self):
+        return self.server.stop_session()
+        
+    def has_active_session(self, args = {}):
+
         return self.server.has_active_session()
         
     def main_menu(self, args):
@@ -75,6 +74,7 @@ class Navigation:
         self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
+#         self.ui_helper.create_folder_item('Is running?', Router.url_for(Paths.HAS_ACTIVE_SESSION))
       
         self.ui_helper.end_directory()
      

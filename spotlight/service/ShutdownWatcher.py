@@ -28,7 +28,7 @@ class ShutdownWatcher(Thread):
         self.server = server
 
     def run(self):
-        while not xbmc.abortRequested:
+        while not xbmc.abortRequested and self.server.server_is_up:
             time.sleep(2)
         
         self.server.stop()
