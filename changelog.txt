@@ -1,3 +1,8 @@
+1.1.1:
+
+- Fixed not working add-on on Linux/OE
+- Reverted creation of session during XBMC startup (logging in to Spotify is still done once add-on is accessed)
+
 1.1.0:
 
 - Inbox support showing sent Playlists, Artists, Albums and Tracks
