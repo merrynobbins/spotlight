@@ -38,14 +38,14 @@ class Server:
         self.settings = Settings()
         self.authenticator = Authenticator()
         self.url_gen = UrlGenerator()        
-        self.model_factory = ModelFactory(self.url_gen)
+        self.model_factory = ModelFactory(self.url_gen)    
+        self.session = None    
+        self.set_up_session()
         self.server_is_up = False
 
     def start(self):      
-        if not self.server_is_up: 
-            self.main_loop = MainLoop()
-            self.buffer_manager = BufferManager() 
-            self.session = self.set_up_session()
+        if not self.server_is_up:              
+            self.set_up_session()
             self.runner = self.start_main_loop()        
             self.start_proxy_runner()
             self.set_up_model_factory(self.session, self.proxy_info)
@@ -93,10 +93,12 @@ class Server:
         ShutdownWatcher(self).start()
 
     def set_up_session(self):
-        callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
-        session = SessionFactory(callbacks, self.settings).create_session()
-        self.set_up_authenticator(session)        
-        return session
+        if self.session is None:
+            self.main_loop = MainLoop()
+            self.buffer_manager = BufferManager()
+            callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
+            self.session = SessionFactory(callbacks, self.settings).create_session()
+            self.set_up_authenticator(self.session)        
 
     def set_up_authenticator(self, session):
         self.authenticator.set_session(session)
