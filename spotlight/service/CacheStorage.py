@@ -16,43 +16,60 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #  
-from spotify.utils.decorators import synchronized
+from threading import Lock
 
 class Cache:
     
     def __init__(self, name):
-        self.name = name
+        self.name = name        
+        self.lock = Lock()
         self.invalidate()
         
     def invalidate(self):
+        self.lock.acquire()
         self.map = {}
+        self.lock.release()
         
     def update(self, key, value):
+        self.lock.acquire()
         self.map[key] = value
+        self.lock.release()
         
     def get(self, key):
-        return self.map.get(key)
+        self.lock.acquire()
+        value = self.map.get(key) 
+        self.lock.release()
+        return value
         
         
 class CacheStorage:
     
     caches = {}
+    
+    def __init__(self):
+        self.lock = Lock()
         
     def get_cache(self, key):
+        self.lock.acquire()
         cache = self.caches.get(key)
         if cache is None:
             cache = Cache(key)
             self.caches[key] = cache
+        self.lock.release()
         return cache
                  
     def invalidate(self, key):
+        self.lock.acquire()
         cache = self.caches.get(key)
         if cache is not None:
             cache.invalidate()
+        self.lock.release()
           
     def invalidate_all(self):
+        self.lock.acquire()
         for key, value in self.caches.iteritems() :
             value.invalidate()
+        self.lock.release()
             
             
         

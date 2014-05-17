@@ -33,6 +33,7 @@ from spotlight.model.Settings import Settings
 from spotlight.service.ShutdownWatcher import ShutdownWatcher
 from spotlight.service.CacheStorage import CacheStorage
 from spotlight.service.session.PlaylistCallbacks import PlaylistCallbacks
+from spotlight.service.CacheInvalidator import CacheInvalidator
 
 class Server:
 
@@ -55,6 +56,7 @@ class Server:
             self.log_in()            
             self.set_up_playlistcontainer_callbacks(self.session)
             self.server_is_up = True
+            self.install_cache_invalidator()
             self.install_shutdown_watcher()
         
     def stop(self):
@@ -96,6 +98,9 @@ class Server:
 
     def install_shutdown_watcher(self):
         ShutdownWatcher(self).start()
+        
+    def install_cache_invalidator(self):
+        CacheInvalidator(self).start()        
 
     def set_up_session(self):
         if self.session is None:
