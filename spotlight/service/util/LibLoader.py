@@ -24,6 +24,7 @@ import sys
 
 import xbmc
 import xbmcaddon
+import traceback
 
 
 class Platform:
@@ -62,10 +63,11 @@ class Libraries:
 	
 class LibLoader:
 	
-	def __init__(self):
+	def __init__(self, settings):
 		addon_id = GlobalSettings.ADD_ON_ID
 		addon_cfg = xbmcaddon.Addon(addon_id)
 		self.addon_path = addon_cfg.getAddonInfo('path')
+		self.settings = settings
 	
 	def load_all(self):
 		self.add_native_libraries()
@@ -88,7 +90,24 @@ class LibLoader:
 		self.add_library_paths(Libraries.EXTERNAL)
 	
 	def get_architecture(self):
-		architecture = platform.machine()
+		if self.settings.override_platform_detection:
+			return self.settings.architecture
+		else:
+			return self.get_detected_architecture()
+		
+	def get_platform(self):
+		if self.settings.override_platform_detection:
+			return 'System.Platform.' + self.settings.os
+		else:
+			return self.get_detected_platform()
+	
+	def get_detected_architecture(self):
+		try:
+			architecture = platform.machine()
+		except:
+			xbmc.log('Could not detect architecture! Setting X86')
+			xbmc.log(traceback.format_exc())			
+			return Architecture.X86
 
 		if architecture.startswith('armv6'):
 			return Architecture.ARMV6
@@ -101,7 +120,7 @@ class LibLoader:
 		
 		return architecture
 	
-	def get_platform(self):
+	def get_detected_platform(self):
 		platforms = [platform for platform in Platform.all_platforms() if xbmc.getCondVisibility(platform)]
 		
 		if len(platforms) > 0:

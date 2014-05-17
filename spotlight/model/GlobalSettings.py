@@ -27,6 +27,23 @@ class GlobalSettings:
         self.addon = xbmcaddon.Addon(GlobalSettings.ADD_ON_ID)
     
     @property
-    def internal_server_port(self):
+    def internal_server_port(self):     
         
         return int(self.addon.getSetting('internal_server_port'))
+    
+    @property
+    def override_platform_detection(self):
+        
+        return self.addon.getSetting('override_platform_detection') == 'true'
+    
+    @property
+    def os(self):
+        
+        return self.addon.getSetting('os')
+    
+    @property
+    def architecture(self):
+        
+        return self.addon.getSetting('architecture')
+    
+    

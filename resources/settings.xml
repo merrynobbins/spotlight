@@ -11,5 +11,8 @@
 	</category>
 	<category label="Advanced">
 		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />
+		<setting label="Override platform detection" type="bool" id="override_platform_detection" default="false"/>
+		<setting label="Operating System" type="labelenum" id="os" default="Windows" values="Windows|Linux|OSX" visible="eq(-1,true)"/>
+		<setting label="Architecture" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6" visible="eq(-2,true)"/>	
 	</category>
 </settings>

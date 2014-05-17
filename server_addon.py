@@ -18,7 +18,10 @@
 #  
 
 from spotlight.service.util.LibLoader import LibLoader
-loader = LibLoader()
+from spotlight.model.GlobalSettings import GlobalSettings
+
+settings = GlobalSettings()
+loader = LibLoader(settings)
 loader.load_all() 
 
 from spotlight.service.Server import Server    
