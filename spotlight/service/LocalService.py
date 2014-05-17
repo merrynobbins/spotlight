@@ -30,13 +30,15 @@ from spotlight.service.util import encode
 from spotlight.service.command.LoadInbox import LoadInbox
 from spotify import playlist, link
 from spotify.playlist import Playlist, PlaylistType
+from spotlight.service.util.Cached import Cached
 
 class LocalService:
     
     def __init__(self, server):
         self.server = server
         self.model_factory = server.get_model_factory()
-        self.authenticator = server.get_authenticator()        
+        self.authenticator = server.get_authenticator()   
+        self.cache_storage = server.get_cache_storage()     
         
     def start_session(self):
         self.server.start()
@@ -74,6 +76,7 @@ class LocalService:
         
         return self.model_factory.to_inbox_model(result.tracks(), session)
 
+    @Cached('playlists')
     @SessionGuard
     def playlists(self):
         session = self.current_session()
@@ -81,6 +84,7 @@ class LocalService:
 
         return self.model_factory.to_playlist_list_model_from_container(container)
 
+    @Cached('folder_playlists')
     @SessionGuard
     def folder_playlists(self, folder_id):
         session = self.current_session()
@@ -99,7 +103,7 @@ class LocalService:
                 
         return self.model_factory.to_playlist_list_model(playlists)
 
-    
+    @Cached('playlist_tracks')
     @SessionGuard
     def playlist_tracks(self, uri):
         playlist_link = link.create_from_string(uri)        

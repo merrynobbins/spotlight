@@ -31,16 +31,19 @@ from spotifyproxy.httpproxy import ProxyRunner
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from spotlight.model.Settings import Settings
 from spotlight.service.ShutdownWatcher import ShutdownWatcher
+from spotlight.service.CacheStorage import CacheStorage
+from spotlight.service.session.PlaylistCallbacks import PlaylistCallbacks
 
 class Server:
 
     def __init__(self):
         self.settings = Settings()
-        self.authenticator = Authenticator()
+        self.authenticator = Authenticator()       
         self.url_gen = UrlGenerator()        
         self.model_factory = ModelFactory(self.url_gen)    
         self.session = None    
         self.set_up_session()
+        self.cache_storage = CacheStorage()
         self.server_is_up = False
 
     def start(self):      
@@ -49,7 +52,8 @@ class Server:
             self.runner = self.start_main_loop()        
             self.start_proxy_runner()
             self.set_up_model_factory(self.session, self.proxy_info)
-            self.log_in()
+            self.log_in()            
+            self.set_up_playlistcontainer_callbacks(self.session)
             self.server_is_up = True
             self.install_shutdown_watcher()
         
@@ -72,6 +76,7 @@ class Server:
         self.authenticator.clean_up()
         self.main_loop = None
         self.buffer_manager = None
+        self.cache_storage = None
     
     def start_main_loop(self):        
         runner = MainLoopThread(self.main_loop, self.session)
@@ -98,10 +103,14 @@ class Server:
             self.buffer_manager = BufferManager()
             callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
             self.session = SessionFactory(callbacks, self.settings).create_session()
-            self.set_up_authenticator(self.session)        
+            self.set_up_authenticator(self.session)            
 
     def set_up_authenticator(self, session):
         self.authenticator.set_session(session)
+
+    def set_up_playlistcontainer_callbacks(self, session):
+        container = session.playlistcontainer()
+        container.add_callbacks(PlaylistCallbacks(self.cache_storage))
     
     def set_up_model_factory(self, session, proxy_info):
         self.url_gen.set_session(session)
@@ -116,5 +125,7 @@ class Server:
     def get_model_factory(self):
         return self.model_factory
 
+    def get_cache_storage(self):
+        return self.cache_storage
     
         
