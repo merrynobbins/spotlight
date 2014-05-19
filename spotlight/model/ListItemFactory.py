@@ -23,7 +23,7 @@ class ListItemFactory:
     
     def create_list_item(self, track_model, index = 0):
         path = track_model.path
-        item = xbmcgui.ListItem('%s - %s' % (track_model.album, track_model.track), 
+        item = xbmcgui.ListItem('%s - %s' % (track_model.artist, track_model.track),
                       iconImage = track_model.iconImage,
                       thumbnailImage = track_model.thumbnailImage, 
                       path = track_model.path)        
