@@ -20,7 +20,7 @@
 import xbmcaddon
 
 class GlobalSettings:
-    
+
     ADD_ON_ID = 'plugin.audio.spotlight'
     
     def __init__(self):
@@ -30,3 +30,19 @@ class GlobalSettings:
     def internal_server_port(self):
         
         return int(self.addon.getSetting('internal_server_port'))
+
+
+    DisplayTitle, DisplayArtistTitle, DisplayAlbumTitle, DisplayArtistAlbumTitle = 0, 1, 2, 3
+
+    LABEL_TO_TRACK_DISPLAY = {
+                        'Title' : DisplayTitle,
+                        'Artist - Title': DisplayArtistTitle,
+                        'Album - Title': DisplayAlbumTitle,
+                        'Artist - Album - Title': DisplayArtistAlbumTitle
+    }
+
+    @property
+    def preferred_track_display(self):
+        track_display_label = self.addon.getSetting('track_display')
+
+        return GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
