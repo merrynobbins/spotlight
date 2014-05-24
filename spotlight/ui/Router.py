@@ -25,6 +25,7 @@ import json
 import sys
 import urllib
 import urlparse
+import inspect
 
 class Router:
 
@@ -37,9 +38,12 @@ class Router:
         
         self.execute()
 
-    def execute_path_function(self, function, args):
+    def execute_path_function(self, function, args, path):
         try:
-            return getattr(self.context, function.__name__)(args)
+            if len(inspect.getargspec(function).args) == 3:
+                return getattr(self.context, function.__name__)(args, path)
+            else:
+                return getattr(self.context, function.__name__)(args)
         except Fault, e:
             dialog = xbmcgui.Dialog()
             message = re.sub(r'<[^>]*>\:', '', e.faultString)
@@ -56,9 +60,9 @@ class Router:
             args = json.loads(args_str)
         if function == None:
             raise Exception("Incorrect router config. No function provided for path = " + self.path)
-        
+
         if self.context != None:
-            self.execute_path_function(function, Model.from_object(args))            
+            self.execute_path_function(function, Model.from_object(args), self.path)            
         else:
             function(args)
         

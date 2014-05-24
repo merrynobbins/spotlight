@@ -24,6 +24,7 @@ import sys
 import xbmcplugin
 import xbmc
 import xbmcgui
+from spotlight.model.Page import Page
 
 class UiHelper:
     
@@ -79,10 +80,13 @@ class UiHelper:
         
         return text
          
-    def create_list_of_tracks(self, tracks):
+    def create_list_of_tracks(self, tracks, page = Page(), path = None):
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_SONGS)
+                
+        self.create_track_list_items(tracks, page)
         
-        self.create_track_list_items(tracks)
+        if page.has_next():
+            self.create_folder_item('Next results...', Router.url_for(path, page.next()))
         
     def create_list_of_albums(self, albums):
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
@@ -98,8 +102,12 @@ class UiHelper:
             url = Router.url_for(Paths.ARTIST_ALBUMS, Model(artist = artist.uri))
             self.create_folder_item('%s' % (artist.name), url)
 
-    def create_track_list_items(self, tracks):
-        for index, track in enumerate(tracks):
+    def create_track_list_items(self, tracks, page = Page()):
+        indexes = range(0, len(tracks) - 1)
+        if not page.is_infinite():
+            indexes = page.current_range()
+        for index in indexes:
+            track = tracks[index - page.start]
             path, item = self.list_item_factory.create_list_item(track, index + 1)
             self.add_context_menu(track, path, item)
             

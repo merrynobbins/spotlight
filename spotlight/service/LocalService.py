@@ -31,6 +31,9 @@ from spotlight.service.command.LoadInbox import LoadInbox
 from spotify import playlist, link
 from spotify.playlist import Playlist, PlaylistType
 from spotlight.service.util.Cached import Cached
+from spotlight.model.Model import Model
+from spotlight.model.Page import Page
+import xbmc
 
 class LocalService:
     
@@ -62,12 +65,26 @@ class LocalService:
         return self.model_factory.to_track_list_model(tracks, session)
     
     @SessionGuard
-    def starred(self):
+    def starred(self, page = {}):
         session = self.current_session()
-        search_result = LoadStarred(session).run_and_wait()
-        tracks = LoadTrack.from_list(search_result.tracks(), session)
+        playlist = LoadStarred(session).run_and_wait()
+        page = Page.from_obj(page)
+        
+        if not page.is_infinite():
+            tracks_model = self.partial_result(playlist, page, session)
+        else:            
+            tracks = LoadTrack.from_list(playlist.tracks(), session)
+            tracks_model = Model(tracks = self.model_factory.to_track_list_model(tracks, session), page = Page())
          
-        return self.model_factory.to_track_list_model(tracks, session)
+        return tracks_model
+    
+    def partial_result(self, playlist, page, session):
+        tracks = []
+        for i in page.current_range():
+            track = playlist.track(i)
+            tracks.append(track)
+            
+        return Model(tracks = self.model_factory.to_track_list_model(tracks, session), page = Page(page.start, page.offset, playlist.num_tracks()))
     
     @SessionGuard
     def inbox(self):

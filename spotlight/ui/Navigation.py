@@ -24,6 +24,8 @@ from spotlight.model.GlobalSettings import GlobalSettings
 import sys
 import xmlrpclib
 import socket
+from spotlight.model.Page import Page
+import xbmc
 
 class Navigation:
     
@@ -71,7 +73,7 @@ class Navigation:
         
         self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
-        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED))
+        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, Page(0, 50, 0)))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
 #         self.ui_helper.create_folder_item('Is running?', Router.url_for(Paths.HAS_ACTIVE_SESSION))
@@ -132,9 +134,9 @@ class Navigation:
         self.ui_helper.create_list_of_tracks(Model.from_object_list(inbox.tracks))
         self.ui_helper.end_directory()
             
-    def starred(self, args):                
-        tracks = Model.from_object_list(self.server.starred())
-        self.ui_helper.create_list_of_tracks(tracks)
+    def starred(self, args, path):                                         
+        tracks_model = Model.from_object(self.server.starred(args))
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
         self.ui_helper.end_directory()
  
     def search(self, args):        
