@@ -9,6 +9,9 @@
 		<setting label="Volume normalization" type="bool" id="volume_normalization" default="false" />
 		<setting label="Maximum cache size (MB)" type="number" id="max_cache_size" default="100" />
 	</category>
+    <category label="Display settings">
+		<setting label="Track display" type="labelenum" id="track_display" default="Artist - Title" values="Title|Artist - Title|Album - Title|Artist - Album - Title" />
+	</category>
 	<category label="Advanced">
 		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />
 		<setting label="Override platform detection" type="bool" id="override_platform_detection" default="false"/>

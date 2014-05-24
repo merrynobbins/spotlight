@@ -18,21 +18,38 @@
 #  
 
 import xbmcgui
+from GlobalSettings import GlobalSettings
 
 class ListItemFactory:
-    
-    def create_list_item(self, track_model, index = 0):
+
+    def __init__(self):
+        self.settings = GlobalSettings()
+
+    def format_title(self, track_model):
+        formatters = {
+            GlobalSettings.DisplayTitle: lambda track_model: '%s' % track_model.track,
+            GlobalSettings.DisplayAlbumTitle: lambda track_model: '%s - %s' % (track_model.album, track_model.track),
+            GlobalSettings.DisplayArtistTitle: lambda track_model: '%s - %s' % (track_model.artist, track_model.track),
+            GlobalSettings.DisplayArtistAlbumTitle: lambda track_model: '%s - %s - %s' % (track_model.artist,
+                                                                                   track_model.album, track_model.track)
+        }
+        display_settings = self.settings.preferred_track_display
+        formatter = formatters.get(display_settings, lambda track_model: '%s' % track_model.track)
+
+        return formatter(track_model)
+
+    def create_list_item(self, track_model, index=0):
         path = track_model.path
-        item = xbmcgui.ListItem('%s - %s' % (track_model.album, track_model.track), 
-                      iconImage = track_model.iconImage,
-                      thumbnailImage = track_model.thumbnailImage, 
-                      path = track_model.path)        
-        item.setInfo('music', {'album':track_model.album, 
-                     'artist':track_model.artist, 
-                     'title' : track_model.track,            
-                     'duration':track_model.time, 
-                     'tracknumber' : index})
-        
+        item = xbmcgui.ListItem(self.format_title(track_model),
+                                iconImage=track_model.iconImage,
+                                thumbnailImage=track_model.thumbnailImage,
+                                path=track_model.path)
+        item.setInfo('music', {'album': track_model.album,
+                               'artist': track_model.artist,
+                               'title': track_model.track,
+                               'duration': track_model.time,
+                               'tracknumber': index})
+
         return path, item
     
    

@@ -38,10 +38,12 @@ class ModelFactory:
                 uri=self.url_gen.get_album_uri(album))
     
     def to_track_model(self, track):
-                    
+
+        track_artist_names = [artist.name() for artist in track.artists()]
         return Model(track=track.name(),
                      album=track.album().name(),
-                     artist=track.album().artist().name(),
+                     album_artist=track.album().artist().name(),
+                     artist=", ".join(track_artist_names),
                      uri=link.create_from_track(track).as_string(),
                      type=link.create_from_track(track).type(),
                      album_uri=self.url_gen.get_album_uri(track.album()),
