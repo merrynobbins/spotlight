@@ -11,6 +11,8 @@
 	</category>
     <category label="Display settings">
 		<setting label="Track display" type="labelenum" id="track_display" default="Artist - Title" values="Title|Artist - Title|Album - Title|Artist - Album - Title" />
+		<setting label="Enable pagination" type="bool" id="enable_pagination" default="false" />
+		<setting label="Items per page" type="number" id="items_per_page" default="50" enabled="eq(-1,true)" />
 	</category>
 	<category label="Advanced">
 		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />

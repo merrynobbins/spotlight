@@ -73,7 +73,7 @@ class Navigation:
         
         self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
-        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, Page(0, 50, 0)))
+        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
 #         self.ui_helper.create_folder_item('Is running?', Router.url_for(Paths.HAS_ACTIVE_SESSION))

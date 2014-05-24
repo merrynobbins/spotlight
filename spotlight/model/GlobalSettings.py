@@ -18,6 +18,7 @@
 #
 
 import xbmcaddon
+from spotlight.model.Page import Page
 
 class GlobalSettings:
     
@@ -60,4 +61,16 @@ class GlobalSettings:
         track_display_label = self.addon.getSetting('track_display')
 
         return GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
+    
+    @property
+    def initial_page_for_pagination(self):
+        enable = self.addon.getSetting('enable_pagination') == 'true'
+        offset = int(self.addon.getSetting('items_per_page'))
+        
+        if enable:
+            return Page(0, offset, 0)
+        
+        return Page.inifinite()
+        
+        
     
