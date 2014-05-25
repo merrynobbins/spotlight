@@ -62,13 +62,12 @@ class GlobalSettings:
 
         return GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
     
-    @property
-    def initial_page_for_pagination(self):
+    def initial_page_for_pagination(self, identifier = ''):
         enable = self.addon.getSetting('enable_pagination') == 'true'
         offset = int(self.addon.getSetting('items_per_page'))
         
         if enable:
-            return Page(0, offset, 0)
+            return Page(0, offset, 0, identifier)
         
         return Page.inifinite()
         

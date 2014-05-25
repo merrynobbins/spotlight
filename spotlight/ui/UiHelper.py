@@ -35,9 +35,10 @@ class UiHelper:
     CONTENT_ALBUMS = 'albums'
     CONTENT_ARTISTS = 'artists'
 
-    def __init__(self, list_item_factory):
+    def __init__(self, list_item_factory, settings):
         self.addon_handle = int(sys.argv[1])
         self.list_item_factory = list_item_factory
+        self.settings = settings
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
     
     def keyboardText(self, heading = 'Enter phrase'):
@@ -66,7 +67,7 @@ class UiHelper:
         if playlist.is_folder:
             return Router.url_for(Paths.FOLDER_PLAYLISTS, Model(folder_id = playlist.folder_id))
         else: 
-            return Router.url_for(Paths.GET_PLAYLIST, Model(name = playlist.name, uri = playlist.uri))         
+            return Router.url_for(Paths.GET_PLAYLIST, self.settings.initial_page_for_pagination(playlist.uri))         
          
     def format_playlist_name(self, playlist, show):
         if playlist.owner is None or show is False:
@@ -106,7 +107,7 @@ class UiHelper:
         indexes = range(0, len(tracks) - 1)
         if not page.is_infinite():
             indexes = page.current_range()
-        for index in indexes:
+        for index in indexes:            
             track = tracks[index - page.start]
             path, item = self.list_item_factory.create_list_item(track, index + 1)
             self.add_context_menu(track, path, item)

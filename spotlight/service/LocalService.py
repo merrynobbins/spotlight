@@ -33,7 +33,6 @@ from spotify.playlist import Playlist, PlaylistType
 from spotlight.service.util.Cached import Cached
 from spotlight.model.Model import Model
 from spotlight.model.Page import Page
-import xbmc
 
 class LocalService:
     
@@ -70,6 +69,9 @@ class LocalService:
         playlist = LoadStarred(session).run_and_wait()
         page = Page.from_obj(page)
         
+        return self.tracks_model(playlist, page, session)
+    
+    def tracks_model(self, playlist, page, session):
         if not page.is_infinite():
             tracks_model = self.partial_result(playlist, page, session)
         else:            
@@ -80,11 +82,13 @@ class LocalService:
     
     def partial_result(self, playlist, page, session):
         tracks = []
+        page = Page(page.start, page.offset, playlist.num_tracks(), page.identifier)
+        
         for i in page.current_range():
             track = playlist.track(i)
             tracks.append(track)
             
-        return Model(tracks = self.model_factory.to_track_list_model(tracks, session), page = Page(page.start, page.offset, playlist.num_tracks()))
+        return Model(tracks = self.model_factory.to_track_list_model(tracks, session), page = page)
     
     @SessionGuard
     def inbox(self):
@@ -120,15 +124,15 @@ class LocalService:
                 
         return self.model_factory.to_playlist_list_model(playlists)
 
-    @Cached('playlist_tracks')
+#     @Cached('playlist_tracks')
     @SessionGuard
-    def playlist_tracks(self, uri):
-        playlist_link = link.create_from_string(uri)        
+    def playlist_tracks(self, page = {}):
+        page = Page.from_obj(page)
+        playlist_link = link.create_from_string(page.identifier)        
         session = self.current_session()
         linked_playlist = Playlist(playlist.create(session, playlist_link))
-        tracks = LoadTrack.from_list(linked_playlist.tracks(), session)
-        
-        return self.model_factory.to_track_list_model(tracks, session)
+
+        return self.tracks_model(linked_playlist, page, session)        
     
     @SessionGuard
     def album_tracks(self, album_uri):

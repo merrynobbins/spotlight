@@ -31,10 +31,10 @@ class Navigation:
     
     SPOTILITE_SERVER = 'http://127.0.0.1:%d'
 
-    def __init__(self, ui_helper):
+    def __init__(self, ui_helper, settings):
         self.addon_handle = int(sys.argv[1])        
         self.ui_helper = ui_helper
-        self.settings = GlobalSettings()
+        self.settings = settings
         self.create_server_proxy()  
         
         router_config = {None : self.main_menu, 
@@ -73,7 +73,7 @@ class Navigation:
         
         self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
         self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
-        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination))
+        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination()))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
 #         self.ui_helper.create_folder_item('Is running?', Router.url_for(Paths.HAS_ACTIVE_SESSION))
@@ -92,9 +92,9 @@ class Navigation:
         self.ui_helper.create_list_of_playlists(playlists)
         self.ui_helper.end_directory()
         
-    def get_playlist(self, args):
-        tracks = Model.from_object_list(self.server.playlist_tracks(args.uri))
-        self.ui_helper.create_list_of_tracks(tracks)
+    def get_playlist(self, args, path):
+        tracks_model = Model.from_object(self.server.playlist_tracks(args))
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)        
         self.ui_helper.end_directory()
             
     def folder_playlists(self, args):
