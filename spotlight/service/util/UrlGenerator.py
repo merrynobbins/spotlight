@@ -18,6 +18,7 @@
 #  
 
 from spotify import image, link
+from spotify.track import TrackAvailability
 
 class UrlGenerator:
     
@@ -31,13 +32,17 @@ class UrlGenerator:
     
     def get_icon_url(self, track):
         ready_track = self.get_playable_if_local(track)
-        
-        return self.get_image_url(ready_track.album().cover(image.ImageSize.Large))
+        if ready_track.album() is not None:
+            return self.get_image_url(ready_track.album().cover(image.ImageSize.Large))
+
+        return ''
 
     def get_thumbnail_url(self, track):
         ready_track = self.get_playable_if_local(track)
-        
-        return self.get_image_url(ready_track.album().cover())
+        if ready_track.album() is not None:
+            return self.get_image_url(ready_track.album().cover())
+
+        return ''
         
     def get_playable_if_local(self, track):
         if track.is_local(self.session):
@@ -48,6 +53,9 @@ class UrlGenerator:
     def get_track_url(self, track):
         track_id = self.get_track_id(track)
         headers = self.proxy_info.url_headers
+        
+        if not track.get_availability(self.session) is TrackAvailability.Available: 
+            return ''
         
         return 'http://%s:%s/track/%s.wav|%s' % (self.host, self.port, track_id, headers)
     
@@ -60,8 +68,10 @@ class UrlGenerator:
         return link.create_from_track(track).as_string()[14:]
     
     def get_album_uri(self, album):
-
-        return link.create_from_album(album).as_string()
+        if album is not None:
+            return link.create_from_album(album).as_string()
+        
+        return ''
     
     def clean_up(self):
         self.session = None

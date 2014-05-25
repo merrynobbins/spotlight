@@ -56,12 +56,13 @@ class LocalService:
         return self.server.is_active()
 
     @SessionGuard
-    def search(self, query):
+    def search(self, page = {}):
+        page = Page.from_obj(page)
         session = self.current_session()
-        search_result = Search(encode(query), session).run_and_wait()
+        search_result = Search(page, session).run_and_wait()
         tracks = LoadTrack.from_list(search_result.tracks(), session)
-    
-        return self.model_factory.to_track_list_model(tracks, session)
+        
+        return Model(tracks = self.model_factory.to_track_list_model(tracks, session), page = page)
     
     @SessionGuard
     def starred(self, page = {}):
@@ -124,7 +125,7 @@ class LocalService:
                 
         return self.model_factory.to_playlist_list_model(playlists)
 
-#     @Cached('playlist_tracks')
+    @Cached('playlist_tracks')
     @SessionGuard
     def playlist_tracks(self, page = {}):
         page = Page.from_obj(page)

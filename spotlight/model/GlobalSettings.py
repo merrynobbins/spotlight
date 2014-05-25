@@ -34,6 +34,9 @@ class GlobalSettings:
     ADD_ON_ID = 'plugin.audio.spotlight'
     
     def __init__(self):
+        self.refresh_settings()
+    
+    def refresh_settings(self):
         self.addon = xbmcaddon.Addon(GlobalSettings.ADD_ON_ID)
     
     @property
@@ -58,6 +61,8 @@ class GlobalSettings:
 
     @property
     def preferred_track_display(self):
+        self.refresh_settings()
+        
         track_display_label = self.addon.getSetting('track_display')
 
         return GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
@@ -69,7 +74,22 @@ class GlobalSettings:
         if enable:
             return Page(0, offset, 0, identifier)
         
-        return Page.inifinite()
-        
-        
+        return Page.inifinite(identifier)
     
+    def initial_page_for_search(self, identifier = ''):
+        offset = int(self.addon.getSetting('items_per_page'))
+        
+        return Page(0, offset, 0, identifier)        
+        
+    @property    
+    def max_playlists_cache_age(self):
+        self.refresh_settings()
+        
+        return int(self.addon.getSetting('max_playlists_cache_age'))
+    
+    @property
+    def enable_playlists_cache(self):
+        self.refresh_settings()
+        
+        return self.addon.getSetting('enable_playlists_cache') == 'true'
+        

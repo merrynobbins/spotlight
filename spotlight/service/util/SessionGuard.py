@@ -21,6 +21,7 @@ from spotlight.model.Settings import Settings
 from spotify import ConnectionState
 import xbmc
 import types
+import traceback
 
 class SessionGuard(object):
     
@@ -43,6 +44,8 @@ class SessionGuard(object):
                 return self.func (*args, **kw)
             except Exception, e:
                 xbmc.log('Exception when calling service %s args = %s kw = %s' % (e, args, kw))
+                xbmc.log(traceback.format_exc())
+                raise Exception('Exception occured. Check logs and report an issue.')
         
         raise Exception("Cannot connect to Spotify. Are your credentials valid?")
     

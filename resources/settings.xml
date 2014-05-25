@@ -11,11 +11,13 @@
 	</category>
     <category label="Display settings">
 		<setting label="Track display" type="labelenum" id="track_display" default="Artist - Title" values="Title|Artist - Title|Album - Title|Artist - Album - Title" />
-		<setting label="Enable pagination" type="bool" id="enable_pagination" default="false" />
-		<setting label="Items per page" type="number" id="items_per_page" default="50" enabled="eq(-1,true)" />
+		<setting label="Enable pagination (for playlist tracks and starred)" type="bool" id="enable_pagination" default="false" />
+		<setting label="Items per page" type="number" id="items_per_page" default="50" />
 	</category>
 	<category label="Advanced">
 		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />
+		<setting label="Enable playlists cache" type="bool" id="enable_playlists_cache" default="false" />
+		<setting label="Cache max age (s) [0 if should live forever]" type="number" id="max_playlists_cache_age" default="3600" />
 		<setting label="Override platform detection" type="bool" id="override_platform_detection" default="false"/>
 		<setting label="Operating System" type="labelenum" id="os" default="Windows" values="Windows|Linux|OSX" visible="eq(-1,true)"/>
 		<setting label="Architecture" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6" visible="eq(-2,true)"/>	

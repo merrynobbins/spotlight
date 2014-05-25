@@ -72,7 +72,7 @@ class Navigation:
         self.start_session()
         
         self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
-        self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH))
+        self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH, self.settings.initial_page_for_search()))
         self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination()))
         self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
@@ -139,11 +139,14 @@ class Navigation:
         self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
         self.ui_helper.end_directory()
  
-    def search(self, args):        
-        query = self.ui_helper.keyboardText()
+    def search(self, args, path):        
+        if args.identifier == '':
+            query = self.ui_helper.keyboardText()
+        else:
+            query = args.identifier
         if query is not None:
-            tracks = Model.from_object_list(self.server.search(query))
-            self.ui_helper.create_list_of_tracks(tracks)
+            tracks_model = Model.from_object(self.server.search(Page(args.start, args.offset, args.max_items, query)))
+            self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
         self.ui_helper.end_directory()
         
     def album_tracks(self, args):

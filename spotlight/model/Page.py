@@ -33,14 +33,14 @@ class Page:
         if not self.has_next():
             return None
         
-        if new_start + self.offset > self.max_items:
+        if new_start + self.offset > self.max_items and self.max_items != 0:
             new_offset = self.max_items - new_start
         
         return Page(new_start, new_offset, self.max_items, self.identifier)
     
     def has_next(self):
         
-        return self.start + self.offset < self.max_items and not self.is_infinite()
+        return (self.start + self.offset < self.max_items or self.max_items == 0) and not self.is_infinite()
             
     def current_range(self):
         
@@ -54,6 +54,9 @@ class Page:
         if self.start + self.offset > self.max_items and self.max_items > 0:
             self.offset = self.max_items - self.start
 
+    def cache_key(self):
+        return '%s %s %s %s' % (self.start, self.offset, self.max_items, self.identifier)
+
     @staticmethod
     def from_obj(obj):
         page = Page() 
@@ -65,8 +68,8 @@ class Page:
         return page 
         
     @staticmethod        
-    def inifinite():
+    def inifinite(identifier = ''):
         
-        return Page()
+        return Page(0, 0, 0, identifier)
     
         

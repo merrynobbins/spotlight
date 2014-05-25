@@ -25,6 +25,7 @@ import xbmcplugin
 import xbmc
 import xbmcgui
 from spotlight.model.Page import Page
+import traceback
 
 class UiHelper:
     
@@ -104,10 +105,10 @@ class UiHelper:
             self.create_folder_item('%s' % (artist.name), url)
 
     def create_track_list_items(self, tracks, page = Page()):
-        indexes = range(0, len(tracks) - 1)
+        indexes = range(0, len(tracks) - 1)        
         if not page.is_infinite():
             indexes = page.current_range()
-        for index in indexes:            
+        for index in indexes:                        
             track = tracks[index - page.start]
             path, item = self.list_item_factory.create_list_item(track, index + 1)
             self.add_context_menu(track, path, item)

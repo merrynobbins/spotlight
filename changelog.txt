@@ -1,5 +1,12 @@
-1.1.2:
+1.2.0:
 - Platform/Architecture configurable in Advanced Settings
+- Cache can be enabled for caching playlists and playlist tracks in memory (disabled by default)
+- Artist display can be configured in Add-on settings
+- Pagination of tracks in playlists and starred can be enabled and configured in Add-on settings
+- Search results are no longer limited to 100 tracks and have always pagination enabled 
+- Updated libspotify for ARM
+- Unavailable tracks are marked on the list by [unavailable] tag. Tracks unavailable for a region cannot be played anymore
+- Fixed issue with not displaying a playlist if it contains broken tracks  
 
 1.1.1:
 

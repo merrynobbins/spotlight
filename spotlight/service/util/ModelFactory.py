@@ -37,12 +37,11 @@ class ModelFactory:
                 image=self.url_gen.get_image_url(album.cover(image.ImageSize.Large)),
                 uri=self.url_gen.get_album_uri(album))
     
-    def to_track_model(self, track):
-
+    def to_track_model(self, track, session):
+        
         track_artist_names = [artist.name() for artist in track.artists()]
-        return Model(track=track.name(),
-                     album=track.album().name(),
-                     album_artist=track.album().artist().name(),
+        return Model(track=self.get_track_name(track, session),
+                     album=self.get_album_name(track),                     
                      artist=", ".join(track_artist_names),
                      uri=link.create_from_track(track).as_string(),
                      type=link.create_from_track(track).type(),
@@ -51,6 +50,21 @@ class ModelFactory:
                      thumbnailImage=self.url_gen.get_thumbnail_url(track),
                      path=self.url_gen.get_track_url(track),
                      time=track.duration() / 1000)
+    
+    def get_track_name(self, track, session):
+        name = '[not available]'
+        if track.name() is not None:
+            if not track.get_availability(session) is TrackAvailability.Available: 
+                name = track.name() + ' [not available]'
+            else:
+                name = track.name()    
+            
+        return name    
+        
+    def get_album_name(self, track):
+        if track.album() is not None:
+            return track.album().name()
+        return '';
 
     # Fix for a bug in pyspotify-ctypes
     def playlist_folder_name(self, container, index):
@@ -117,7 +131,7 @@ class ModelFactory:
     
     def to_track_list_model(self, tracks, session):
     
-        return [self.to_track_model(track) for track in tracks if track.get_availability(session) is not TrackAvailability.NotStreamable]
+        return [self.to_track_model(track, session) for track in tracks]
     
     def to_album_list_model(self, albums):
     

@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
 #  
 import types
+from spotlight.model.Page import Page
 
 
 class Cached(object):
@@ -33,9 +34,16 @@ class Cached(object):
             item_key = Cached.GLOBAL_KEY
 
             if len(args) > 1:
-                item_key = args[1]
+                arg = args[1]
+                print arg
+                if type(arg) == type({}):
+                    page = Page.from_obj(arg)
+                    item_key = page.cache_key()
+                else:
+                    item_key = arg
                 
             result = cache.get(item_key)
+            
             if result is not None:
                 print 'Cache hit for item ', item_key, ' and cache ', self.key
                 return result
