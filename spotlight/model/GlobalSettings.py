@@ -62,10 +62,22 @@ class GlobalSettings:
     @property
     def preferred_track_display(self):
         self.refresh_settings()
-        
         track_display_label = self.addon.getSetting('track_display')
+        if not track_display_label.isdigit():
+            track_display_label = GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
+            self.addon.setSetting('track_display', str(track_display_label))
 
-        return GlobalSettings.LABEL_TO_TRACK_DISPLAY.get(track_display_label)
+        return int(track_display_label)
+
+        '''
+        Upper code is just as temporary measure to convert current installs.
+        In couple of version this can just be made code below and the LABEL_TO_TRACK_DISPLAY conversion be removed:
+        
+        self.refresh_settings()
+
+        return int(self.addon.getSetting('track_display'))
+        '''
+        
     
     def initial_page_for_pagination(self, identifier = ''):
         enable = self.addon.getSetting('enable_pagination') == 'true'
