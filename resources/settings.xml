@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-	<category label="Account">
-		<setting label="Username" type="text" id="username" default="" />
-		<setting label="Password" type="text" id="password" option="hidden" enable="!eq(-1,)" default="" />
+	<category label="30001">
+		<setting label="30002" type="text" id="username" default="" />
+		<setting label="30003" type="text" id="password" option="hidden" enable="!eq(-1,)" default="" />
 	</category>
-	<category label="Playback settings">
-		<setting label="Preferred bitrate" type="labelenum" id="preferred_bitrate" default="160kbps" values="96kbps|160kbps|320kbps" />
-		<setting label="Volume normalization" type="bool" id="volume_normalization" default="false" />
-		<setting label="Maximum cache size (MB)" type="number" id="max_cache_size" default="100" />
+	<category label="30004">
+		<setting label="30005" type="labelenum" id="preferred_bitrate" default="160kbps" values="96kbps|160kbps|320kbps" />
+		<setting label="30006" type="bool" id="volume_normalization" default="false" />
+		<setting label="30007" type="number" id="max_cache_size" default="100" />
 	</category>
-    <category label="Display settings">
-		<setting label="Track display" type="labelenum" id="track_display" default="Artist - Title" values="Title|Artist - Title|Album - Title|Artist - Album - Title" />
-		<setting label="Enable pagination (for playlist tracks and starred)" type="bool" id="enable_pagination" default="false" />
-		<setting label="Items per page" type="number" id="items_per_page" default="50" />
+    <category label="30008">
+		<setting label="30009" type="enum" id="track_display" default="1" lvalues="30021|30022|30023|30024" />
+		<setting label="30010" type="bool" id="enable_pagination" default="false" />
+		<setting label="30011" type="number" id="items_per_page" default="50" />
 	</category>
-	<category label="Advanced">
-		<setting label="Internal server port" type="number" id="internal_server_port" default="8000" />
-		<setting label="Enable playlists cache" type="bool" id="enable_playlists_cache" default="false" />
-		<setting label="Cache max age (s) [0 if should live forever]" type="number" id="max_playlists_cache_age" default="3600" />
-		<setting label="Override platform detection" type="bool" id="override_platform_detection" default="false"/>
-		<setting label="Operating System" type="labelenum" id="os" default="Windows" values="Windows|Linux|OSX" visible="eq(-1,true)"/>
-		<setting label="Architecture" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6" visible="eq(-2,true)"/>	
+	<category label="30012">
+		<setting label="30013" type="number" id="internal_server_port" default="8000" />
+		<setting label="30014" type="bool" id="enable_playlists_cache" default="false" />
+		<setting label="30015" type="number" id="max_playlists_cache_age" default="3600" />
+		<setting label="30016" type="bool" id="override_platform_detection" default="false"/>
+		<setting label="30017" type="labelenum" id="os" default="Windows" values="Windows|Linux|OSX" visible="eq(-1,true)"/>
+		<setting label="30018" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6" visible="eq(-2,true)"/>	
 	</category>
 </settings>
