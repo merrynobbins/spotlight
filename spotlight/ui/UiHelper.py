@@ -84,6 +84,10 @@ class UiHelper:
          
     def create_list_of_tracks(self, tracks, page = Page(), path = None):
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_SONGS)
+        xbmcplugin.addSortMethod(self.addon_handle, xbmcplugin.SORT_METHOD_TRACKNUM)
+        xbmcplugin.addSortMethod(self.addon_handle, xbmcplugin.SORT_METHOD_ARTIST)
+        xbmcplugin.addSortMethod(self.addon_handle, xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(self.addon_handle, xbmcplugin.SORT_METHOD_ALBUM)
                 
         self.create_track_list_items(tracks, page)
         
