@@ -109,7 +109,7 @@ class UiHelper:
             self.create_folder_item('%s' % (artist.name), url)
 
     def create_track_list_items(self, tracks, page = Page()):
-        indexes = range(0, len(tracks) - 1)        
+        indexes = range(0, len(tracks))        
         if not page.is_infinite():
             indexes = page.current_range()
         for index in indexes:                        
