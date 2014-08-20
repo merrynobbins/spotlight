@@ -27,12 +27,14 @@ from spotlight.service.util.UrlGenerator import UrlGenerator
 from spotlight.service.util.ModelFactory import ModelFactory
 from spotifyproxy.audio import BufferManager
 from spotify import MainLoop
+from spotify import ConnectionState
 from spotifyproxy.httpproxy import ProxyRunner
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from spotlight.model.Settings import Settings
 from spotlight.service.ShutdownWatcher import ShutdownWatcher
 from spotlight.service.CacheStorage import CacheStorage
 from spotlight.service.session.PlaylistCallbacks import PlaylistCallbacks
+
 
 class Server:
 
@@ -42,7 +44,6 @@ class Server:
         self.url_gen = UrlGenerator()        
         self.model_factory = ModelFactory(self.url_gen)    
         self.session = None    
-        self.set_up_session()
         self.cache_storage = CacheStorage(self.settings)
         self.server_is_up = False
 
@@ -52,8 +53,6 @@ class Server:
             self.runner = self.start_main_loop()        
             self.start_proxy_runner()
             self.set_up_model_factory(self.session, self.proxy_info)
-            self.log_in()            
-            self.set_up_playlistcontainer_callbacks(self.session)
             self.server_is_up = True
             self.install_shutdown_watcher()
         
@@ -62,11 +61,16 @@ class Server:
             self.session.logout()
             self.runner.stop()
             self.proxy_runner.stop()
+            self.server.shutdown()
+            self.server.server_close()
             self.clean_up()
             self.server_is_up = False
         
     def is_active(self):
         return self.server_is_up
+
+    def reset_settings(self):
+        self.settings = Settings()
     
     def clean_up(self):
         self.session = None
@@ -101,7 +105,7 @@ class Server:
         if self.session is None:
             self.main_loop = MainLoop()
             self.buffer_manager = BufferManager()
-            callbacks = SpotifyCallbacks(self.main_loop, self.buffer_manager, self.authenticator)
+            callbacks = SpotifyCallbacks(self, self.main_loop, self.buffer_manager, self.authenticator)
             self.session = SessionFactory(callbacks, self.settings).create_session()
             self.set_up_authenticator(self.session)            
 
@@ -117,8 +121,18 @@ class Server:
         self.url_gen.set_proxy_info(proxy_info)        
 
     def log_in(self):
-        return self.authenticator.login(self.settings.username, self.settings.password)
-    
+        # Running login twice ends up in offline mode ...
+        if self.authenticator.connection_state() == ConnectionState.LoggedIn:
+            return
+
+        state = self.authenticator.login(self.settings.username, self.settings.password)
+        # TODO This will not be called if the login was performed in SessionGuard
+        # if state == ConnectionState.LoggedIn:
+        #     self.set_up_playlistcontainer_callbacks(self.session)
+
+    def log_out(self):
+        return self.authenticator.logout()
+
     def get_authenticator(self):
         return self.authenticator
     
