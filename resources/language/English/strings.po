@@ -90,7 +90,11 @@ msgctxt "#30018"
 msgid "Architecture"
 msgstr ""
 
-#empty strings from id 30019 to 30020
+msgctxt "#30019"
+msgid "Show nonavailable tracks"
+msgstr ""
+
+#empty strings from id 30020
 
 msgctxt "#30021"
 msgid "Title"

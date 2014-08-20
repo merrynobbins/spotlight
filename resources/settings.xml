@@ -13,6 +13,7 @@
 		<setting label="30009" type="enum" id="track_display" default="1" lvalues="30021|30022|30023|30024" />
 		<setting label="30010" type="bool" id="enable_pagination" default="false" />
 		<setting label="30011" type="number" id="items_per_page" default="50" />
+		<setting label="30019" type="bool" id="show_missing" default="true" />
 	</category>
 	<category label="30012">
 		<setting label="30013" type="number" id="internal_server_port" default="8000" />
