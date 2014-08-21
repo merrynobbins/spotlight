@@ -19,11 +19,14 @@
 
 from spotify.session import SessionCallbacks
 from spotify import ErrorType
+from spotify import ConnectionState
+import weakref
 import xbmc
 
 class SpotifyCallbacks(SessionCallbacks):
     
-    def __init__(self, main_loop, audio_buffer, authenticator):
+    def __init__(self, server, main_loop, audio_buffer, authenticator):
+        self.server = weakref.proxy(server)
         self.main_loop = main_loop
         self.audio_buffer = audio_buffer
         self.authenticator = authenticator
@@ -36,6 +39,8 @@ class SpotifyCallbacks(SessionCallbacks):
             self.authenticator.error()
         else:
             self.authenticator.logged_in()
+            if self.authenticator.connection_state() == ConnectionState.LoggedIn:
+                self.server.set_up_playlistcontainer_callbacks(session)
         
     def logged_out(self, session):
         xbmc.log('Spotify logged out.')

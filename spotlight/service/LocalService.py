@@ -34,6 +34,7 @@ from spotlight.service.util.Cached import Cached
 from spotlight.model.Model import Model
 from spotlight.model.Page import Page
 
+
 class LocalService:
     
     def __init__(self, server):
@@ -44,14 +45,24 @@ class LocalService:
         
     def start_session(self):
         self.server.start()
-        
         return 'OK'
 
     def stop_session(self):
         self.server.stop()
-        
         return 'OK'
-    
+
+    def login(self):
+        self.server.log_in()
+        return 'OK'
+
+    def logout(self):
+        self.server.log_out()
+        return 'OK'
+
+    def reset(self):
+        self.server.reset_settings()
+        return 'OK'
+
     def has_active_session(self):
         return self.server.is_active()
 

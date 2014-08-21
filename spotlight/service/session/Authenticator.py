@@ -33,11 +33,19 @@ class Authenticator:
         self.session = session
     
     def login(self, username, password):      
-        xbmc.log('Logging in')
+        xbmc.log('Spotlight: Logging in')
         self.check_session()  
         self.session.login(username, password)
         self.flag.wait(Authenticator.WAIT_TIMEOUT)
-        xbmc.log('Lock released')        
+        xbmc.log('Spotlight: Lock released - %s' % self.connection_state())
+        return self.connection_state()
+
+    def logout(self):      
+        xbmc.log('Spotlight: Logging out')
+        self.check_session()  
+        self.session.logout()
+        self.flag.wait(Authenticator.WAIT_TIMEOUT)
+        xbmc.log('Spotlight: Lock released - %s' % self.connection_state())
         return self.connection_state()
         
     def connection_state(self):
@@ -49,8 +57,12 @@ class Authenticator:
         return self.session
         
     def logged_in(self):
-        xbmc.log('Got logged in callback')
+        xbmc.log('Got logged IN callback')
         self.release_lock_if_logged()
+
+    def logged_out(self):
+        xbmc.log('Got logged OUT callback')
+        self.release_lock_if_not_logged()
         
     def error(self):
         xbmc.log('Got error callback')
@@ -58,6 +70,10 @@ class Authenticator:
         
     def release_lock_if_logged(self):
         if self.connection_state() == ConnectionState.LoggedIn:
+            self.release_lock()
+
+    def release_lock_if_not_logged(self):
+        if self.connection_state() == ConnectionState.LoggedOut:
             self.release_lock()
             
     def release_lock(self):

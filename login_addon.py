@@ -24,8 +24,6 @@ settings = GlobalSettings()
 loader = LibLoader(settings)
 loader.load_all() 
 
-from spotlight.service.Server import Server    
+from spotlight.service.ServerSession import ServerSession
 
-server = Server()
-server.start()
-server.start_rpc_server()
+ServerSession(settings).start()

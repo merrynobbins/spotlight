@@ -35,8 +35,12 @@ class SessionGuard(object):
         settings = Settings()
         authenticator = args[0].authenticator
         
+        state = authenticator.connection_state()
         while not authenticator.connection_state() is ConnectionState.LoggedIn and trials < SessionGuard.MAX_TRIALS:
-            authenticator.login(settings.username, settings.password)
+            if authenticator.connection_state() == ConnectionState.Offline:
+                authenticator.logout()
+            state = authenticator.connection_state()
+            state = authenticator.login(settings.username, settings.password)
             trials += 1
             
         if authenticator.connection_state() is ConnectionState.LoggedIn:
