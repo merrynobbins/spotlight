@@ -18,6 +18,7 @@
 #  
 
 from spotlight.model.Model import Model
+from spotlight.model.Settings import Settings
 from spotify import image, link, playlist, handle_sp_error
 from spotify.playlist import Playlist, PlaylistType
 from spotify.link import LinkType
@@ -25,9 +26,10 @@ import ctypes
 from spotify.track import TrackAvailability
 
 class ModelFactory:
-    
+
     def __init__(self, url_gen):
         self.url_gen = url_gen
+        self.settings = Settings()
     
     def to_album_model(self, album):
         
@@ -48,9 +50,20 @@ class ModelFactory:
                      album_uri=self.url_gen.get_album_uri(track.album()),
                      iconImage=self.url_gen.get_icon_url(track),
                      thumbnailImage=self.url_gen.get_thumbnail_url(track),
-                     path=self.url_gen.get_track_url(track),
+                     path=self.get_track_path(track, session),
                      time=track.duration() / 1000)
-    
+
+    def get_track_path(self, track, session):
+        path = "http://127.0.0.1/spotlight/empty-track/"
+        if not track.get_availability(session) is TrackAvailability.Available:
+            # Use unique nonexistent URL for nonavailable tracks. Otherwise
+            # XBMC treats all nonavailable tracks as one.
+            path += link.create_from_track(track).as_string()
+        else:
+            path=self.url_gen.get_track_url(track)
+        
+        return path
+
     def get_track_name(self, track, session):
         name = '[not available]'
         if track.name() is not None:
@@ -130,8 +143,12 @@ class ModelFactory:
         return Model(name = artist.name(), uri = link.create_from_artist(artist).as_string())
     
     def to_track_list_model(self, tracks, session):
-    
-        return [self.to_track_model(track, session) for track in tracks]
+        if self.settings.show_missing:
+            return [self.to_track_model(track, session) for track in tracks]
+        else:
+            # Do not display nonavailable tracks
+            return [self.to_track_model(track, session) for track in tracks
+                    if track.get_availability(session) is TrackAvailability.Available]
     
     def to_album_list_model(self, albums):
     

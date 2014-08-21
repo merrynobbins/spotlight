@@ -58,4 +58,9 @@ class Settings(GlobalSettings):
         
         return self.addon.getSetting('volume_normalization')
     
+    @property
+    def show_missing(self):
+        
+        return self.addon.getSetting('show_missing') == 'true'
+    
    
