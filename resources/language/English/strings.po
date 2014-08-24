@@ -91,7 +91,7 @@ msgid "Architecture"
 msgstr ""
 
 msgctxt "#30019"
-msgid "Show nonavailable tracks"
+msgid "Show unavailable tracks"
 msgstr ""
 
 #empty strings from id 30020
