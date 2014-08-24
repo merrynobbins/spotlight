@@ -8,162 +8,163 @@ msgstr ""
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: XBMC Translation Team\n"
-"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: pl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #Add-on messages id=32001 to 32030
 
 msgctxt "#30001"
-msgid "Account"
+msgid "Konto"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Username"
+msgid "U¿ytkownik"
 msgstr ""
 
 msgctxt "#30003"
-msgid "Password"
+msgid "Has³o"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Playback settings"
+msgid "Ustawienia odtwarzania"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Preferred bitrate"
+msgid "Preferowany bitrate"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Volume normalization"
+msgid "Normalizacja g³oœnoœci"
 msgstr ""
 
 msgctxt "#30007"
-msgid "Maximum cache size (MB)"
+msgid "Maksymalny rozmiar cache (MB)"
 msgstr ""
 
 msgctxt "#30008"
-msgid "Display settings"
+msgid "Ustawienia wyœwietlania"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Track display"
+msgid "Wyœwietlanie utworu"
 msgstr ""
 
 msgctxt "#30010"
-msgid "Enable pagination (for playlist tracks and starred)"
+msgid "W³¹cz podzia³ na strony (dla list i zonaczonych gwiazdk¹)"
 msgstr ""
 
 msgctxt "#30011"
-msgid "Items per page"
+msgid "Liczba pozycji na stronie"
 msgstr ""
 
 msgctxt "#30012"
-msgid "Advanced"
+msgid "Zaawansowane"
 msgstr ""
 
 msgctxt "#30013"
-msgid "Internal server port"
+msgid "Wewnêtrzny port serwera"
 msgstr ""
 
 msgctxt "#30014"
-msgid "Enable playlists cache"
+msgid "W³¹cz cache dla list"
 msgstr ""
 
 msgctxt "#30015"
-msgid "Cache max age (s) [0 if should live forever]"
+msgid "Czas ¿ycia cache'a (s) [0 jeœli ma nie wygasaæ]"
 msgstr ""
 
 msgctxt "#30016"
-msgid "Override platform detection"
+msgid "Nie wykrywaj sprzêtu i systemu"
 msgstr ""
 
 msgctxt "#30017"
-msgid "Operating System"
+msgid "System operacyjny"
 msgstr ""
 
 msgctxt "#30018"
-msgid "Architecture"
+msgid "Architektura"
 msgstr ""
 
 msgctxt "#30019"
-msgid "Show nonavailable tracks"
+msgid "Poka¿ niedostêpne utwory"
 msgstr ""
 
 #empty strings from id 30020
 
 msgctxt "#30021"
-msgid "Title"
+msgid "Tytu³"
 msgstr ""
 
 msgctxt "#30022"
-msgid "Artist - Title"
+msgid "Artysta - Tytu³"
 msgstr ""
 
 msgctxt "#30023"
-msgid "Album - Title"
+msgid "Album - Tytu³"
 msgstr ""
 
 msgctxt "#30024"
-msgid "Artist - Album - Title"
+msgid "Artysta - Album - Tytu³"
 msgstr ""
 
+#GUI
+
 msgctxt "#30025"
-msgid "Inbox"
+msgid "Wiadomoœci"
 msgstr ""
 
 msgctxt "#30026"
-msgid "Search..."
+msgid "Szukaj..."
 msgstr ""
 
 msgctxt "#30027"
-msgid "Starred"
+msgid "Oznaczone gwiazdk¹"
 msgstr ""
 
 msgctxt "#30028"
-msgid "Playlists"
+msgid "Listy odtwarzania"
 msgstr ""
 
 msgctxt "#30029"
-msgid "Next results..."
+msgid "Nastêpne wyniki..."
 msgstr ""
 
 msgctxt "#30030"
-msgid "Browse artist..."
+msgid "Przegl¹daj artystê..."
 msgstr ""
 
 msgctxt "#30031"
-msgid "Browse album..."
+msgid "Przegl¹daj album..."
 msgstr ""
 
 msgctxt "#30032"
-msgid "Queue item"
+msgid "Dodaj do kolejki"
 msgstr ""
 
 msgctxt "#30033"
-msgid "Enter phrase..."
+msgid "WprowadŸ frazê..."
 msgstr ""
 
 msgctxt "#30034"
-msgid "from"
+msgid "od"
 msgstr ""
 
 msgctxt "#30035"
-msgid "Playlists"
+msgid "Listy odtw."
 msgstr ""
 
 msgctxt "#30036"
-msgid "Artists"
+msgid "Artyœci"
 msgstr ""
 
 msgctxt "#30037"
-msgid "Albums"
+msgid "Albumy"
 msgstr ""
 
 msgctxt "#30038"
-msgid "Tracks"
+msgid "Utwory"
 msgstr ""
+

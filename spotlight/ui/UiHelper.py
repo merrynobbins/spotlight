@@ -25,7 +25,8 @@ import xbmcplugin
 import xbmc
 import xbmcgui
 from spotlight.model.Page import Page
-import traceback
+from spotlight.model.GlobalSettings import GlobalSettings
+import xbmcaddon
 
 class UiHelper:
     
@@ -38,12 +39,13 @@ class UiHelper:
 
     def __init__(self, list_item_factory, settings):
         self.addon_handle = int(sys.argv[1])
+        self.add_on = xbmcaddon.Addon(GlobalSettings.ADD_ON_ID)    
         self.list_item_factory = list_item_factory
         self.settings = settings
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
     
-    def keyboardText(self, heading = 'Enter phrase'):
-        keyboard = xbmc.Keyboard('', heading)
+    def keyboardText(self):        
+        keyboard = xbmc.Keyboard('', self.add_on.getLocalizedString(30033))
         keyboard.doModal()
         if keyboard.isConfirmed():
             return keyboard.getText()     
@@ -74,7 +76,7 @@ class UiHelper:
         if playlist.owner is None or show is False:
             return self.add_bold(playlist.name, when = playlist.is_folder)
         
-        return self.add_bold('%s [I]from %s[/I]' % (playlist.name, playlist.owner), when = playlist.is_folder)
+        return self.add_bold('%s [I]%s %s[/I]' % (playlist.name, self.add_on.getLocalizedString(30034), playlist.owner), when = playlist.is_folder)
 
     def add_bold(self, text, when):
         if when:
@@ -92,7 +94,7 @@ class UiHelper:
         self.create_track_list_items(tracks, page)
         
         if page.has_next():
-            self.create_folder_item('Next results...', Router.url_for(path, page.next()))
+            self.create_folder_item(self.add_on.getLocalizedString(30029), Router.url_for(path, page.next()))
         
     def create_list_of_albums(self, albums):
         xbmcplugin.setContent(self.addon_handle, UiHelper.CONTENT_ALBUMS)
@@ -123,9 +125,9 @@ class UiHelper:
         browse_album_url = Router.url_for(Paths.ALBUM_TRACKS, Model(album = track.album_uri))
         browse_artist_url = Router.url_for(Paths.ARTIST_ALBUMS_FOR_TRACK, Model(track = track.uri))
         
-        li.addContextMenuItems([('Queue item', UiHelper.RUN_PLUGIN_SCRIPT % play_url), 
-                                ('Browse album...', UiHelper.UPDATE_CONTAINER_SCRIPT % browse_album_url), 
-                                ('Browse artist...', UiHelper.UPDATE_CONTAINER_SCRIPT % browse_artist_url)])       
+        li.addContextMenuItems([(self.add_on.getLocalizedString(30032), UiHelper.RUN_PLUGIN_SCRIPT % play_url), 
+                                (self.add_on.getLocalizedString(30031), UiHelper.UPDATE_CONTAINER_SCRIPT % browse_album_url), 
+                                (self.add_on.getLocalizedString(30030), UiHelper.UPDATE_CONTAINER_SCRIPT % browse_artist_url)])       
 
     def end_directory(self):
         xbmcplugin.endOfDirectory(self.addon_handle)

@@ -24,6 +24,6 @@ settings = GlobalSettings()
 loader = LibLoader(settings)
 loader.load_all() 
 
-from spotlight.service.ServerSession import ServerSession
+#from spotlight.service.ServerSession import ServerSession
 
-ServerSession(settings).start()
+#ServerSession(settings).start()

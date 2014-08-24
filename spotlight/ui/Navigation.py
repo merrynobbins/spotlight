@@ -25,14 +25,15 @@ import sys
 import xmlrpclib
 import socket
 from spotlight.model.Page import Page
-import xbmc
+import xbmcaddon
 
 class Navigation:
     
     SPOTILITE_SERVER = 'http://127.0.0.1:%d'
 
     def __init__(self, ui_helper, settings):
-        self.addon_handle = int(sys.argv[1])        
+        self.addon_handle = int(sys.argv[1])    
+        self.add_on = xbmcaddon.Addon(GlobalSettings.ADD_ON_ID)    
         self.ui_helper = ui_helper
         self.settings = settings
         self.create_server_proxy()  
@@ -70,11 +71,11 @@ class Navigation:
         
     def main_menu(self, args):
         self.start_session()
-        
-        self.ui_helper.create_folder_item('Inbox', Router.url_for(Paths.INBOX))
-        self.ui_helper.create_folder_item('Search...', Router.url_for(Paths.SEARCH, self.settings.initial_page_for_search()))
-        self.ui_helper.create_folder_item('Starred', Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination()))
-        self.ui_helper.create_folder_item('Playlists', Router.url_for(Paths.PLAYLISTS))
+                
+        self.ui_helper.create_folder_item(self.add_on.getLocalizedString(30025), Router.url_for(Paths.INBOX))
+        self.ui_helper.create_folder_item(self.add_on.getLocalizedString(30026), Router.url_for(Paths.SEARCH, self.settings.initial_page_for_search()))
+        self.ui_helper.create_folder_item(self.add_on.getLocalizedString(30027), Router.url_for(Paths.STARRED, self.settings.initial_page_for_pagination()))
+        self.ui_helper.create_folder_item(self.add_on.getLocalizedString(30028), Router.url_for(Paths.PLAYLISTS))
 #         self.ui_helper.create_folder_item('Stop server', Router.url_for(Paths.STOP_SESSION))
 #         self.ui_helper.create_folder_item('Is running?', Router.url_for(Paths.HAS_ACTIVE_SESSION))
       
@@ -104,15 +105,16 @@ class Navigation:
             
     def inbox(self, args):
         inbox = Model.from_object(self.server.inbox())
-        self.create_inbox_menu('Playlists (%d)', Paths.INBOX_PLAYLISTS, count = len(inbox.playlists))
-        self.create_inbox_menu('Artists (%d)', Paths.INBOX_ARTISTS, count = len(inbox.artists))
-        self.create_inbox_menu('Albums (%d)', Paths.INBOX_ALBUMS, count = len(inbox.albums))
-        self.create_inbox_menu('Tracks (%d)', Paths.INBOX_TRACKS, count = len(inbox.tracks))
+        label_tpl = '%s (%d)'
+        self.create_inbox_menu(label_tpl, self.add_on.getLocalizedString(30035), Paths.INBOX_PLAYLISTS, count = len(inbox.playlists))
+        self.create_inbox_menu(label_tpl, self.add_on.getLocalizedString(30036), Paths.INBOX_ARTISTS, count = len(inbox.artists))
+        self.create_inbox_menu(label_tpl, self.add_on.getLocalizedString(30037), Paths.INBOX_ALBUMS, count = len(inbox.albums))
+        self.create_inbox_menu(label_tpl, self.add_on.getLocalizedString(30038), Paths.INBOX_TRACKS, count = len(inbox.tracks))
         self.ui_helper.end_directory()
         
-    def create_inbox_menu(self, name_tpl, path, count):
+    def create_inbox_menu(self, name_tpl, label, path, count):
         if count > 0:
-            self.ui_helper.create_folder_item(name_tpl % count, Router.url_for(path))
+            self.ui_helper.create_folder_item(name_tpl % (label, count), Router.url_for(path))
         
     def inbox_albums(self, args):
         inbox = Model.from_object(self.server.inbox())
@@ -144,7 +146,7 @@ class Navigation:
             query = self.ui_helper.keyboardText()
         else:
             query = args.identifier
-        if query is not None:
+        if query is not None and query is not '':
             tracks_model = Model.from_object(self.server.search(Page(args.start, args.offset, args.max_items, query)))
             self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
         self.ui_helper.end_directory()
