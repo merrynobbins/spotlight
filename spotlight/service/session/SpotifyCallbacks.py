@@ -72,3 +72,6 @@ class SpotifyCallbacks(SessionCallbacks):
     def music_delivery(self, session, data, num_samples, sample_type, sample_rate, num_channels):
         xbmc.log("libspotify: music delivery samples = %d" % num_samples)
         return self.audio_buffer.music_delivery(data, num_samples, sample_type, sample_rate, num_channels)
+
+    def scrobble_error(self, session, error):
+        xbmc.log("libspotify: scrobble error: %d" % error)

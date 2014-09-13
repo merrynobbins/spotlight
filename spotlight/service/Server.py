@@ -107,7 +107,8 @@ class Server:
             self.buffer_manager = BufferManager()
             callbacks = SpotifyCallbacks(self, self.main_loop, self.buffer_manager, self.authenticator)
             self.session = SessionFactory(callbacks, self.settings).create_session()
-            self.set_up_authenticator(self.session)            
+            self.set_up_authenticator(self.session)
+            self.authenticator.lastfm_scrobbling(self.settings.lastfm_enabled, self.settings.lastfm_username, self.settings.lastfm_password)
 
     def set_up_authenticator(self, session):
         self.authenticator.set_session(session)
