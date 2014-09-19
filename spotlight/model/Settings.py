@@ -62,5 +62,16 @@ class Settings(GlobalSettings):
     def show_missing(self):
         
         return self.addon.getSetting('show_missing') == 'true'
-    
+
+    @property
+    def lastfm_enabled(self):
+        return self.addon.getSetting('lastfm_enabled') == 'true'
+
+    @property
+    def lastfm_username(self):
+        return self.addon.getSetting('lastfm_username')
+
+    @property
+    def lastfm_password(self):
+        return self.addon.getSetting('lastfm_password')
    

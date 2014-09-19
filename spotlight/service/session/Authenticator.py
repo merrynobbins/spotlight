@@ -19,7 +19,7 @@
 
 from threading import Event
 import xbmc
-from spotify import ConnectionState
+from spotify import ConnectionState, SocialProvider, ScrobblingState
 
 class Authenticator:
     
@@ -86,3 +86,12 @@ class Authenticator:
         
     def clean_up(self):
         self.session = None
+
+    def lastfm_scrobbling(self, enabled, username, password):
+        if enabled:
+            xbmc.log('Last.fm scrobbling enabled')
+            self.session.set_social_credentials(SocialProvider.Lastfm, username, password)
+            self.session.set_scrobbling(SocialProvider.Lastfm, ScrobblingState.LocalEnabled)
+        else:
+            xbmc.log('Last.fm scrobbling disabled')
+            self.session.set_scrobbling(SocialProvider.Lastfm, ScrobblingState.LocalDisabled)
