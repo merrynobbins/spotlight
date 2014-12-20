@@ -26,6 +26,6 @@
 		<setting label="30015" type="number" id="max_playlists_cache_age" default="3600" />
 		<setting label="30016" type="bool" id="override_platform_detection" default="false"/>
 		<setting label="30017" type="labelenum" id="os" default="Windows" values="Windows|Linux|OSX" visible="eq(-1,true)"/>
-		<setting label="30018" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6" visible="eq(-2,true)"/>	
+		<setting label="30018" type="labelenum" id="architecture" default="X86" values="x86|x86_64|armv6|armv7l" visible="eq(-2,true)"/>
 	</category>
 </settings>
