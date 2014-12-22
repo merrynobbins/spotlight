@@ -42,7 +42,8 @@ class Architecture:
 	
 	X86 = "x86"
 	X86_64 = "x86_64"
-	ARMV6 = "armv6"	
+	ARMV6 = "armv6"
+	ARMV7L = "armv7l"
 
 class Libraries:
 	
@@ -51,6 +52,7 @@ class Libraries:
 				(Platform.LINUX, Architecture.X86_64) : ["resources/dlls/linux/x86_64"],
 				(Platform.LINUX, Architecture.ARMV6) : ["resources/dlls/linux/armv6hf",
 													"resources/dlls/linux/armv6"],
+				(Platform.LINUX, Architecture.ARMV7L) : ["resources/dlls/linux/armv6hf"],
 				(Platform.WINDOWS, Architecture.X86) : ["resources/dlls/windows/x86"],
 				(Platform.WINDOWS, Architecture.X86_64) : ["resources/dlls/windows/x86"],
 				(Platform.OSX, Architecture.X86) : ["resources/dlls/osx"],		
