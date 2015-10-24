@@ -23,11 +23,11 @@ msgid "Account"
 msgstr "Konto"
 
 msgctxt "#30002"
-msgid
+msgid "Username"
 msgstr "Użytkownik"
 
 msgctxt "#30003"
-msgid "Username"
+msgid "Password"
 msgstr "Hasło"
 
 msgctxt "#30004"
@@ -171,3 +171,6 @@ msgctxt "#30038"
 msgid "Tracks"
 msgstr "Utwory"
 
+msgctxt "#30041"
+msgid "No results found"
+msgstr "Nie znaleziono wyników"

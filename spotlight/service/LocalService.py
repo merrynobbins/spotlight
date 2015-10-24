@@ -15,7 +15,8 @@
 # 
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
-#  
+#
+import xbmc
 
 from spotlight.service.util.SessionGuard import SessionGuard
 from spotlight.service.command.LoadTrack import LoadTrack
@@ -140,7 +141,7 @@ class LocalService:
     @SessionGuard
     def playlist_tracks(self, page = {}):
         page = Page.from_obj(page)
-        playlist_link = link.create_from_string(page.identifier)        
+        playlist_link = link.create_from_string(page.identifier)
         session = self.current_session()
         linked_playlist = Playlist(playlist.create(session, playlist_link))
 

@@ -92,7 +92,9 @@ class UiHelper:
         xbmcplugin.addSortMethod(self.addon_handle, xbmcplugin.SORT_METHOD_ALBUM)
                 
         self.create_track_list_items(tracks, page)
-        
+
+        xbmc.log("page is %s" % page.__dict__)
+
         if page.has_next():
             self.create_folder_item(self.add_on.getLocalizedString(30029), Router.url_for(path, page.next()))
         
@@ -111,15 +113,16 @@ class UiHelper:
             self.create_folder_item('%s' % (artist.name), url)
 
     def create_track_list_items(self, tracks, page = Page()):
-        indexes = range(0, len(tracks))        
-        if not page.is_infinite():
-            indexes = page.current_range()
-        for index in indexes:                        
-            track = tracks[index - page.start]
-            path, item = self.list_item_factory.create_list_item(track, index + 1)
-            self.add_context_menu(track, path, item)
-            
-            xbmcplugin.addDirectoryItem(handle=self.addon_handle, url = path, listitem=item)            
+        if len(tracks) > 0:
+            indexes = range(0, len(tracks))
+            if not page.is_infinite():
+                indexes = page.current_range()
+            for index in indexes:
+                track = tracks[index - page.start]
+                path, item = self.list_item_factory.create_list_item(track, index + 1)
+                self.add_context_menu(track, path, item)
+
+                xbmcplugin.addDirectoryItem(handle=self.addon_handle, url = path, listitem=item)
 
     def add_context_menu(self, track, play_url, li):
         browse_album_url = Router.url_for(Paths.ALBUM_TRACKS, Model(album = track.album_uri))

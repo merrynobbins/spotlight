@@ -15,7 +15,9 @@
 # 
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
-#  
+#
+import xbmc
+import xbmcgui
 
 from spotlight.ui.Router import Router
 from spotlight.model.Model import Model
@@ -95,7 +97,8 @@ class Navigation:
         
     def get_playlist(self, args, path):
         tracks_model = Model.from_object(self.server.playlist_tracks(args))
-        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)        
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks),
+                                             Page.from_obj(tracks_model.page).with_updated_max_items(len(tracks_model.tracks)), path)
         self.ui_helper.end_directory()
             
     def folder_playlists(self, args):
@@ -138,7 +141,8 @@ class Navigation:
             
     def starred(self, args, path):                                         
         tracks_model = Model.from_object(self.server.starred(args))
-        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
+        self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks),
+                                             Page.from_obj(tracks_model.page).with_updated_max_items(len(tracks_model.tracks)), path)
         self.ui_helper.end_directory()
  
     def search(self, args, path):        
@@ -148,7 +152,12 @@ class Navigation:
             query = args.identifier
         if query is not None and query is not '':
             tracks_model = Model.from_object(self.server.search(Page(args.start, args.offset, args.max_items, query)))
-            self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks), Page.from_obj(tracks_model.page), path)
+            if len(tracks_model.tracks) > 0:
+                self.ui_helper.create_list_of_tracks(Model.from_object_list(tracks_model.tracks),
+                                                     Page.from_obj(tracks_model.page).with_updated_max_items(len(tracks_model.tracks)), path)
+            else:
+                dialog = xbmcgui.Dialog()
+                dialog.ok("Spotlight", self.add_on.getLocalizedString(30041))
         self.ui_helper.end_directory()
         
     def album_tracks(self, args):

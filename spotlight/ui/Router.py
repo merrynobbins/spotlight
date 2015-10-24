@@ -56,20 +56,19 @@ class Router:
         function = self.route_config.get(self.path)
         args_str = self.args.get('args')
         args = {}
-        if args_str != None:
+        if args_str is not None:
             args = json.loads(args_str)
-        if function == None:
+        if function is None:
             raise Exception("Incorrect router config. No function provided for path = " + self.path)
 
-        if self.context != None:
+        if self.context is not None:
             self.execute_path_function(function, Model.from_object(args), self.path)            
         else:
             function(args)
         
     @staticmethod    
     def url_for(path, args = {}):
-        query = {}
-        query['path'] = path
+        query = {'path': path}
         if not type(args) is dict:
             args = args.__dict__
         query['args'] = json.dumps(args)

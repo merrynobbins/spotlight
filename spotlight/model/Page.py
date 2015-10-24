@@ -15,7 +15,9 @@
 # 
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>
-#  
+#
+import xbmc
+
 
 class Page:
         
@@ -57,19 +59,31 @@ class Page:
     def cache_key(self):
         return '%s %s %s %s' % (self.start, self.offset, self.max_items, self.identifier)
 
+    def with_updated_max_items(self, max_items):
+        if self.max_items is None or self.max_items == 0:
+            page = Page(self.start, self.offset, max_items, self.identifier)
+            page.fix_offset()
+        else:
+            page = self
+        return page
+
     @staticmethod
     def from_obj(obj):
-        page = Page() 
+        xbmc.log("Creating page from obj:%s" % obj)
+        page = Page()
         page.start = obj.get('start')
         page.offset = obj.get('offset')
         page.max_items = obj.get('max_items')
-        page.identifier= obj.get('identifier')
-        
-        return page 
-        
+        page.identifier = obj.get('identifier')
+        page.fix_offset()
+        xbmc.log("Created page:%s" % page)
+
+        return page
+
     @staticmethod        
     def inifinite(identifier = ''):
         
         return Page(0, 0, 0, identifier)
-    
+
+
         
